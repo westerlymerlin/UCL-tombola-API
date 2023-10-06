@@ -4,7 +4,8 @@ from settings import settings
 
 class Motor:
     def __init__(self):
-        self.message_start = settings['reading_offset'] - 40001
+        self.command_start = settings['control_offset'] - 40001
+        self.query_start = settings['read_offset'] - 40001
         self.controller = minimalmodbus.Instrument(settings['port'], settings['station'], minimalmodbus.MODE_RTU)
         self.controller.serial.parity = minimalmodbus.serial.PARITY_NONE
         self.controller.serial.baudrate = settings['baud']
@@ -33,11 +34,11 @@ class Motor:
         self.controller_command([self.frequency, self.direction])
 
     def controller_command(self, message):
-        self.controller.write_registers(self.message_start, message)
+        self.controller.write_registers(self.command_start, message)
         self.controller.serial.close()
 
     def controller_query(self):
-        data = self.controller.read_registers(self.message_start, self.read_length, 3)
+        data = self.controller.read_registers(self.query_start, self.read_length, 3)
         self.controller.serial.close()
         returnvalue ={}
         returnvalue['output-current'] = data[0]/10

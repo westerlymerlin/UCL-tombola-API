@@ -3,7 +3,7 @@
 #### Minimal Modbus Library Documentation `https://minimalmodbus.readthedocs.io/en/stable/`
 
 #### Uses V20 power controller
-Datasheet: ` https://www.siemens.com/global/en/products/drives/sinamics/low-voltage-converters/standard-performance-frequency-converter/sinamics-v20.html`
+Datasheet: ` https://support.industry.siemens.com/cs/attachments/109824500/V20_op_instr_0823_en-US.pdf`
  
  
 #### RS484 Controller
