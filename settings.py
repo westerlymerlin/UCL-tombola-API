@@ -4,27 +4,6 @@ import datetime
 version = '0.0.1'
 
 
-def friendlydirname(sourcename):
-    sourcename = sourcename.replace('/', '-')
-    sourcename = sourcename.replace('\\', '-')
-    sourcename = sourcename.replace(':', '-')
-    sourcename = sourcename.replace('*', '-')
-    sourcename = sourcename.replace('?', 'Q')
-    sourcename = sourcename.replace('<', '-')
-    sourcename = sourcename.replace('>', '-')
-    sourcename = sourcename.replace('"', '-')
-    sourcename = sourcename.replace('&', '-')
-    sourcename = sourcename.replace('%', '-')
-    sourcename = sourcename.replace('#', '-')
-    sourcename = sourcename.replace('$', '-')
-    sourcename = sourcename.replace("'", '-')
-    sourcename = sourcename.replace(',', '.')
-    sourcename = sourcename.replace('--', '-')
-    sourcename = sourcename.replace('--', '-')
-    sourcename = sourcename.replace('--', '-')
-    return sourcename
-
-
 def writesettings():
     settings['LastSave'] = datetime.datetime.now().strftime('%d/%m/%y %H:%M:%S')
     with open('settings.json', 'w') as outfile:
@@ -32,21 +11,10 @@ def writesettings():
 
 
 def initialise():
-    isettings = {}
-    isettings['LastSave'] = '01/01/2000 00:00:01'
-    isettings['port'] = '/dev/ttyUSB0'
-    isettings['baud'] = 9600
-    isettings['bytesize'] = 8
-    isettings['stopbits'] = 1
-    isettings['timeout'] = 0.5
-    isettings['station'] = 10
-    isettings['clear_buffers_before_call'] = True
-    isettings['clear_buffers_after_call'] = True
-    isettings['control_offset'] = 40005
-    isettings['reading_offset'] = 40009
-    isettings['read_length'] = 8
+    isettings = {'LastSave': '01/01/2000 00:00:01', 'port': '/dev/ttyUSB0', 'baud': 9600, 'bytesize': 8, 'stopbits': 1,
+                 'timeout': 0.5, 'station': 10, 'clear_buffers_before_call': True, 'clear_buffers_after_call': True,
+                 'control_offset': 40003, 'reading_offset': 40024, 'read_length': 12}
     return isettings
-    # writesettings()
 
 
 def readsettings():
@@ -65,7 +33,6 @@ def loadsettings():
     for item in settings.keys():
         try:
             settings[item] = fsettings[item]
-            # print('settings[%s] = %s' % (item, settings[item]))
         except KeyError:
             print('settings[%s] Not found in json file using default' % item)
 
