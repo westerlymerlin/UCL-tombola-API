@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="60" >
 <title>London Geochronology Centre - Tombola Server</title>
 <link href="{{ url_for('static',filename='css/text.css') }}" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 </head>
-<body>
-	  <section class="banner">
+<body onload="getstatusdata()">
+
+    <section class="banner">
 		  <div >
-               <P class="logo">London Geochronology Centre - Tombola Server Status &nbsp CPU {{cputemperature}}&deg;C</P>
+               <P class="logo">London Geochronology Centre - Tombola Server Status &nbsp CPU <strong id="123-cpu">awaiting-data</strong>&deg;C</P>
               <p class="breadcrumbtext"><a href = "/" class="breadcrumblink">Return to index</a> &nbsp|&nbsp
               <a href = "/pylog" class="breadcrumblink">Application Log</a> &nbsp|&nbsp
               <a href = "/guaccesslog" class="breadcrumblink">Website Access Log</a> &nbsp|&nbsp
@@ -22,35 +22,35 @@
           </div>
   </section>
 <section class="container2">
-    <p> Positions</p>
+    <p><strong>V20 Motor Controller</strong></p>
         <table border = 1px cellspacing = 0>
             <thead>
-                <td class="tabledataleft"><B>Motor Controller</B></td>
-                <td class="tabledataleft"><B>Status</B></td>
+                <td class="tabledataleft"><B>Register</B></td>
+                <td class="tabledataleft"><B>Value</B></td>
             </thead>
             <tr>
                     <td class="tabledataleft">Running</td>
-                    <td class="tabledataleft">False</td>
+                    <td class="tabledataleft" id="123-running">awaiting-data</td>
             </tr>
             <tr>
                     <td class="tabledataleft">Direction</td>
-                    <td class="tabledataleft">Nort Set</td>
+                    <td class="tabledataleft" id="123-direction">awaiting-data</td>
             </tr>
             <tr>
                     <td class="tabledataleft">Frequency</td>
-                    <td class="tabledataleft">Not Set</td>
+                    <td class="tabledataleft" id="123-frequency">awaiting-data</td>
             </tr>
             <tr>
                     <td class="tabledataleft">Voltage</td>
-                    <td class="tabledataleft">Not set</td>
+                    <td class="tabledataleft" id="123-voltage">awaiting-data</td>
             </tr>
             <tr>
                     <td class="tabledataleft">Current</td>
-                    <td class="tabledataleft">Not set</td>
+                    <td class="tabledataleft" id="123-current">awaiting-data</td>
             </tr>
             <tr>
                     <td class="tabledataleft">Motor RPM</td>
-                    <td class="tabledataleft">Not Set</td>
+                    <td class="tabledataleft" id="123-rpm">awaiting-data</td>
             </tr>
       </table>
     <p>&nbsp</p>
@@ -58,5 +58,33 @@
   <section class="banner">
  <div class ="copyright"><strong>Software Version</strong> {{version}}<br>&copy;2023 - <strong>London Geochronology Centre</strong></div>
 	  </section>
+
+<script>
+
+setInterval(getstatusdata, 5000);
+
+
+async function getstatusdata() {
+  const response = await fetch("/statusdata");
+  const statusdata = await response.json();
+  var idtoupdate = document.getElementById('123-cpu');
+  idtoupdate.innerHTML = statusdata.cpu;
+  var idtoupdate = document.getElementById('123-running');
+  idtoupdate.innerHTML = statusdata.running;
+  var idtoupdate = document.getElementById('123-direction');
+  idtoupdate.innerHTML = statusdata.direction;
+  var idtoupdate = document.getElementById('123-frequency');
+  idtoupdate.innerHTML = statusdata.frequency;
+  var idtoupdate = document.getElementById('123-voltage');
+  idtoupdate.innerHTML = statusdata.voltage;
+  var idtoupdate = document.getElementById('123-current');
+  idtoupdate.innerHTML = statusdata.current;
+  var idtoupdate = document.getElementById('123-rpm');
+  idtoupdate.innerHTML = statusdata.rpm;
+
+}
+
+</script>
+
 </body>
 </html>

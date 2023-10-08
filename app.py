@@ -8,13 +8,9 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    with open(settings['cputemp'], 'r') as f:
-        log = f.readline()
-    f.close()
-    cputemperature = round(float(log)/1000, 1)
     if request.method == 'POST':
         print('Settings updated via web application')
-    return render_template('index.html', cputemperature=cputemperature)
+    return render_template('index.html')
 
 
 @app.route('/api', methods=['POST'])
@@ -27,6 +23,16 @@ def api():
             return "badly formed json message - item not found", 201
     except KeyError:
         return "badly formed json message", 201
+
+@app.route('/statusdata', methods=['GET', 'POST'])
+def statusdata():
+    ctrldata = {'running': 0, 'direction': 'FWD', 'frequency': 0, 'voltage': 0, 'current': 0, 'rpm': 0}
+    with open(settings['cputemp'], 'r') as f:
+        log = f.readline()
+    f.close()
+    cputemperature = round(float(log)/1000, 1)
+    ctrldata['cpu'] = cputemperature
+    return jsonify(ctrldata), 201
 
 
 @app.route('/pylog')
