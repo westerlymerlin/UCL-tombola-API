@@ -5,7 +5,7 @@ from settings import settings
 class Motor:
     def __init__(self):
         self.command_start_register = settings['control_offset'] - 40001
-        self.query_start_register = settings['read_offset'] - 40001
+        self.query_start_register = settings['reading_offset'] - 40001
         self.controller = minimalmodbus.Instrument(settings['port'], settings['station'], minimalmodbus.MODE_RTU)
         self.controller.serial.parity = minimalmodbus.serial.PARITY_NONE
         self.controller.serial.baudrate = settings['baud']
