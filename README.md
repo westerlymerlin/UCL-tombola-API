@@ -12,7 +12,6 @@ Datasheet: ` https://support.industry.siemens.com/cs/attachments/109824500/V20_o
 
 
 
-
 #### MotorClass.py Commands
 
 `tom.forward( int )`                  set the 40003 (frequency setpoint) to int, 40004 (Run Enable) to 1, 40005 (Forward/reverse command) to 0, 40006 (Start command) to 1
