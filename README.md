@@ -23,16 +23,3 @@ Datasheet: ` https://support.industry.siemens.com/cs/attachments/109824500/V20_o
 
 `tom.controller_query()`            returns the values of registers 40024 to 40039
 
-`tom.print_controlword()`            prints the value from register 99 (STW)
-
-`tom.writeregister(int1, int2)`      will write the value int2 into the register int1	e.g. tom.writeregister(99, 129) writes the value 129 into register 99
-
-
-#### settings.json changes for com port
-
-Run the MortorClass.py file forst, it will generate a freas settings.json file
-
-plug in the USB RS485 controller and find the port number (com1 to com7 on a PC or /dev/ttyUSB0 to /dev/ttyUSB9 on a mac or Raspberry Pi)  
- 
-Change the value for `"port": "com5",`  to suite and run again to pick up the new port accress
-
