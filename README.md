@@ -25,7 +25,7 @@ Datasheet: ` https://support.industry.siemens.com/cs/attachments/109824500/V20_o
 
 'tom.print_controlword()`	prints the value from register 99 (STW)
 
-`tom.writeregister(int1, int2)`		will write the value int2 into the register int1	e.g. tom.writeregister(99, 129) writes the value 99 itno register 99
+`tom.writeregister(int1, int2)`		will write the value int2 into the register int1	e.g. tom.writeregister(99, 129) writes the value 129 itno register 99
 
 
 #### settings.json changes for com port
