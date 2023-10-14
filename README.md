@@ -23,7 +23,7 @@ Datasheet: ` https://support.industry.siemens.com/cs/attachments/109824500/V20_o
 
 `tom.controller_query()` 	returns the values of registers 40024 to 40039
 
-'tom.print_controlword()`	prints the value from register 99 (STW)
+`tom.print_controlword()`	prints the value from register 99 (STW)
 
 `tom.writeregister(int1, int2)`		will write the value int2 into the register int1	e.g. tom.writeregister(99, 129) writes the value 129 itno register 99
 
