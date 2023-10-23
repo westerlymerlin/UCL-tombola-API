@@ -28,7 +28,7 @@ def api():
 @app.route('/statusdata', methods=['GET', 'POST'])
 def statusdata():
     # Query the motor controller for current data
-    motor_data = motor.controller_query()
+    motor_data = tom.controller_query()
     if not motor_data or isinstance(motor_data, str):  # Check if we received a valid response
         return jsonify({'error': 'Unable to fetch motor data'}), 500
 
