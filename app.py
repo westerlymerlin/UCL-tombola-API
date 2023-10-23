@@ -4,7 +4,7 @@ from settings import settings, version
 import logmanager
 
 app = Flask(__name__)
-
+motor = Motor()  # Create an instance of the Motor class
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -26,14 +26,30 @@ def api():
 
 @app.route('/statusdata', methods=['GET', 'POST'])
 def statusdata():
-    ctrldata = {'running': 0, 'direction': 'FWD', 'frequency': 0, 'voltage': 0, 'current': 0, 'rpm': 0}
+    # Query the motor controller for current data
+    motor_data = motor.controller_query()
+    if not motor_data or isinstance(motor_data, str):  # Check if we received a valid response
+        return jsonify({'error': 'Unable to fetch motor data'}), 500
+
+    # Extract motor data from the motor_data list.
+    # This is an assumption based on the order in your MotorClass; you may need to adjust indices.
+    ctrldata = {
+        'running': motor.running,
+        'direction': 'FWD' if motor.direction == 0 else 'REV',
+        'frequency': motor.frequency,
+        'voltage': 0,  # Placeholder, replace with real data if available
+        'current': 0,  # Placeholder, replace with real data if available
+        'rpm': 0,  # Placeholder, replace with real data if available
+    }
+
+    # Getting CPU temperature, as before:
     with open(settings['cputemp'], 'r') as f:
         log = f.readline()
     f.close()
-    cputemperature = round(float(log)/1000, 1)
+    cputemperature = round(float(log) / 1000, 1)
     ctrldata['cpu'] = cputemperature
-    return jsonify(ctrldata), 201
 
+    return jsonify(ctrldata), 201
 
 @app.route('/pylog')
 def showplogs():
