@@ -2,7 +2,7 @@ from settings import settings
 import logging
 from logging.handlers import RotatingFileHandler
 import sys
-
+import os  # Add this import
 
 class stdredirector():
     def __init__(self):
@@ -15,6 +15,10 @@ class stdredirector():
     def flush(self):
         pass
 
+# Ensure log directory exists
+log_dir = os.path.dirname(settings['logfilepath'])
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
 
 logger = logging.getLogger(settings['logappname'])
 logger.setLevel(logging.INFO)
