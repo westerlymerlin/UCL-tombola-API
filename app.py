@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, jsonify, request
 from settings import settings, version
+from MotorClass import Motor
 import logmanager
 
 app = Flask(__name__)
