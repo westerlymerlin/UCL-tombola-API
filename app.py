@@ -35,9 +35,9 @@ def statusdata():
     # Extract motor data from the motor_data list.
     # This is an assumption based on the order in your MotorClass; you may need to adjust indices.
     ctrldata = {
-        'running': motor.running,
-        'direction': 'FWD' if motor.direction == 0 else 'REV',
-        'frequency': motor.frequency,
+        'running': tom.running,
+        'direction': 'FWD' if tom.direction == 0 else 'REV',
+        'frequency': tom.frequency,
         'voltage': 0,  # Placeholder, replace with real data if available
         'current': 0,  # Placeholder, replace with real data if available
         'rpm': 0,  # Placeholder, replace with real data if available
