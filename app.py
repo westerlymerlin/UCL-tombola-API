@@ -5,7 +5,7 @@ from MotorClass import Motor
 import logmanager
 
 app = Flask(__name__)
-motor = Motor()  # Create an instance of the Motor class
+tom = Motor()  # Create an instance of the Motor class
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -65,6 +65,29 @@ def showplogs():
     logs = tuple(log)
     return render_template('logs.html', rows=logs, log='X-Y log', cputemperature=cputemperature, version=version)
 
+@app.route('/start/<int:speed>', methods=['GET'])
+def start(speed):
+    try:
+        tom.forward(speed)
+        return "Tombola started with speed: {}".format(speed)
+    except Exception as e:
+        return "Error: {}".format(str(e))
+
+@app.route('/stop', methods=['GET'])
+def stop():
+    try:
+        tom.stop()
+        return "Tombola stopped"
+    except Exception as e:
+        return "Error: {}".format(str(e))
+
+@app.route('/start/<int:speed>', methods=['GET'])
+def start(speed):
+    try:
+        tom.forward(speed)
+        return "Tombola started with speed: {}".format(speed)
+    except Exception as e:
+        return "Error: {}".format(str(e))
 
 @app.route('/guaccesslog')
 def showgalogs():
