@@ -81,14 +81,6 @@ def stop():
     except Exception as e:
         return "Error: {}".format(str(e))
 
-@app.route('/start/<int:speed>', methods=['GET'])
-def start(speed):
-    try:
-        tom.forward(speed)
-        return "Tombola started with speed: {}".format(speed)
-    except Exception as e:
-        return "Error: {}".format(str(e))
-
 @app.route('/guaccesslog')
 def showgalogs():
     with open(settings['cputemp'], 'r') as f:
