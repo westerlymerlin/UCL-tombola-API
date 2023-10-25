@@ -71,5 +71,5 @@ class Motor:
         return data
 
 
-tom = Motor()
+
 

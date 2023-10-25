@@ -2,7 +2,7 @@ from settings import settings
 import logging
 from logging.handlers import RotatingFileHandler
 import sys
-import os  # Add this import
+import os
 
 class stdredirector():
     def __init__(self):
