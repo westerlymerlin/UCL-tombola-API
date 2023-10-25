@@ -5,7 +5,7 @@ from MotorClass import Motor
 import logmanager
 
 app = Flask(__name__)
-tom = Motor()  # Create an instance of the Motor class
+tom = Motor()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -14,16 +14,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/api', methods=['POST'])
-def api():
-    try:
-        item = request.json['item']
-        if item == 'gettemperature':
-            return jsonify({'value': 0}), 201
-        else:
-            return "badly formed json message - item not found", 201
-    except KeyError:
-        return "badly formed json message", 201
 
 @app.route('/statusdata', methods=['GET', 'POST'])
 def statusdata():

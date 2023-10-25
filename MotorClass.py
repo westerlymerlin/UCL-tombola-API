@@ -72,4 +72,4 @@ class Motor:
 
 
 tom = Motor()
-print(tom.controller_query())
+
