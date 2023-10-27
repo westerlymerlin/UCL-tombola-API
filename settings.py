@@ -1,7 +1,7 @@
 import json
 import datetime
 
-version = '0.0.1'
+version = '1.0.0'
 
 
 def writesettings():
@@ -14,8 +14,9 @@ def initialise():
     isettings = {'LastSave': '01/01/2000 00:00:01', 'port': '/dev/ttyUSB0', 'baud': 9600, 'bytesize': 8, 'stopbits': 1,
                  'timeout': 1, 'station': 1, 'clear_buffers_before_call': True, 'clear_buffers_after_call': True,
                  'control_offset': 40003, 'reading_offset': 40024, 'read_length': 16,
-                 'logfilepath': './logs/tombola.log','logappname' : 'Tombola-Py', 'gunicornpath' :'./logs/',
-                 'cputemp': '/sys/class/thermal/thermal_zone0/temp', 'syslog': '/var/log/syslog' }
+                 'logfilepath': './logs/tombola.log', 'logappname': 'Tombola-Py', 'gunicornpath': './logs/',
+                 'cputemp': '/sys/class/thermal/thermal_zone0/temp', 'syslog': '/var/log/syslog',
+                 'shutdowntime': '23:59:59'}
     return isettings
 
 
