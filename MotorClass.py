@@ -1,7 +1,8 @@
 import minimalmodbus
 import serial.serialutil
-
-from settings import settings
+from datetime import datetime
+from threading import Timer
+from settings import settings, writesettings
 
 
 class Motor:
@@ -24,6 +25,9 @@ class Motor:
         self.direction = 0  # 0 = forward, 1 = reverse
         self.frequency = 0  # 0 - 100%
         self.running = 0  # O = disabled 1 = enabled
+        self.autoshutdown = settings['autoshutdown']
+        self.autoshutdowntime = settings['shutdowntime']
+        self.auto_stop_timer()
 
     def forward(self, speed):
         self.direction = 0
@@ -69,17 +73,20 @@ class Motor:
         try:
             data = self.controller.read_registers(self.query_start_register, self.read_length, 3)
             self.controller.serial.close()
-            return {'running': self.running, 'reqdirection': self.direction, 'reqfrequency': self.frequency,
-                    'direction': data[10], 'frequency': data[0], 'voltage': data[9], 'current': data[2], 'rpm': data[1]}
+            return {'running': running(self.running), 'reqdirection': direction(self.direction),
+                    'reqfrequency': self.frequency, 'direction': direction(data[10]), 'frequency': data[0],
+                    'voltage': data[9], 'current': data[2], 'rpm': data[1]}
         except AttributeError:   # RS485 not plugged in
             print('Tombola Error: RS485 controller is not working or not plugged in')
-            return {'running': self.running, 'reqdirection': self.direction, 'reqfrequency': self.frequency,
-                    'direction': 'No RS485 Controller', 'frequency': 'No RS485 Controller',
-                    'voltage': 'No RS485 Controller', 'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller'}
+            return {'running': running(self.running), 'reqdirection': direction(self.direction),
+                    'reqfrequency': self.frequency, 'direction': 'No RS485 Controller',
+                    'frequency': 'No RS485 Controller', 'voltage': 'No RS485 Controller',
+                    'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller'}
         except minimalmodbus.NoResponseError:
             print('Tombola Error: No response from the V20 controller, check it is powered on and connected')
-            return {'running': self.running, 'reqdirection': self.direction, 'reqfrequency': self.frequency,
-                    'direction': 'RS485 Timeout', 'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout',
+            return {'running': running(self.running), 'reqdirection': direction(self.direction),
+                    'reqfrequency': self.frequency, 'direction': 'RS485 Timeout',
+                    'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout',
                     'current': 'RS485 Timeout', 'rpm': 'RS485 Timeout'}
 
     def print_controlword(self):
@@ -87,6 +94,49 @@ class Motor:
         self.controller.serial.close()
         print(data)
 
-    def writeregister(self, reg, controlword):
+    def write_register(self, reg, controlword):
         self.controller.write_register(reg, controlword)
         self.controller.serial.close()
+
+    def set_stop_time(self, autostop, stoptime):
+        if time_format_check(stoptime):
+            self.autoshutdown = autostop
+            settings['autoshutdown'] = autostop
+            self.autoshutdowntime = stoptime
+            settings['shutdowntime'] = stoptime
+            writesettings()
+
+    def get_stop_time(self):
+        return {'autostop': self.autoshutdown, 'stoptime': self.autoshutdowntime}
+
+    def auto_stop_timer(self):
+        timerthread = Timer(1, self.auto_stop_timer)
+        timerthread.start()
+        if self.autoshutdown and self.running:
+            stoptime = datetime.strptime(datetime.now().strftime('%d/%m/%Y ') +
+                                         self.autoshutdowntime, '%d/%m/%Y %H:%M:%S')
+            print(stoptime)
+            if stoptime < datetime.now():
+                self.stop()
+
+
+def direction(value):
+    if value == 1:
+        return 'Reverse'
+    else:
+        return 'Forward'
+
+
+def running(value):
+    if value == 1:
+        return 'Running'
+    else:
+        return 'Stopped'
+
+
+def time_format_check(value):
+    try:
+        datetime.strptime(value, '%H:%M:%S')
+        return True
+    except ValueError:
+        return False

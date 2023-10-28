@@ -3,7 +3,7 @@ import subprocess
 from flask import Flask, render_template, jsonify, request
 from settings import settings, version
 from MotorClass import Motor
-import logmanager
+# import logmanager
 
 app = Flask(__name__)
 tom = Motor()
@@ -12,13 +12,21 @@ tom = Motor()
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        if len(request.form) == 0:
+        reponse = request.form
+        if 'stop' in reponse.keys():
             tom.stop()
+        elif 'setfreq' in reponse.keys():
+            if int(reponse['setfreq']) > 0:
+                tom.forward(int(reponse['setfreq']))
+        if 'stoptime' in reponse.keys():
+            if 'autostop' in reponse.keys():
+                tom.set_stop_time(True, reponse['stoptime'])
+            else:
+                tom.set_stop_time(False, reponse['stoptime'])
         else:
-            if int(request.form['setfreq']) > 0:
-                tom.forward(int(request.form['setfreq']))
+            print(reponse)  # used for debugging HTML Forms
         print('Settings updated via web application')
-    return render_template('index.html', version=version, frequency=tom.frequency)
+    return render_template('index.html', version=version, frequency=tom.frequency, stoptimer=tom.get_stop_time())
 
 
 @app.route('/statusdata', methods=['GET'])

@@ -22,7 +22,7 @@
           </div>
   </section>
 <section class="container2">
-    <p><strong>V20 Motor Controller</strong></p>
+    <p><strong>V20 Motor Controller Values</strong></p>
         <table border = 1px cellspacing = 0>
             <thead>
                 <td class="tabledataleft"><B>Register</B></td>
@@ -58,20 +58,25 @@
             </tr>
       </table>
     <p>&nbsp</p>
+    <p><strong>Change Settings</strong></p>
     <table border = 1px cellspacing = 0>
-            <thead>
-                <td class="tabledataleft"><B>&nbsp;</B></td>
-                <td class="tabledataleft"><B>Requested Value</B></td>
-            </thead>
             <tr>
                     <form id="startform">
                     <td class="tabledataleft"><button class="gentext" form="startform" formmethod="POST" onclick="location.href='/'">Start Tombola</button></td>
-                    <td class="tabledataleft"><input class="gentext" type="text" name="setfreq" value="{{frequency}}"></td>
+                    <td class="tabledataleft">Frequency (Hz): <input class="gentext" type="text" name="setfreq" value="{{frequency}}"></td>
                     </form>
             </tr>
             <tr>
                 <form id="stopform">
                     <td class="tabledataleft"><button class="gentext" form="stopform" formmethod="POST"  onclick="location.href='/'">Stop Tombola</button></td>
+                     <input type="hidden" name="stop" value="1">
+                </form>
+            </tr>
+            <tr>
+                <form id="timeform">
+                    <td class="tabledataleft"><button class="gentext" form="timeform" formmethod="POST"  onclick="location.href='/'">Update Stop Time</button></td>
+                     <td class="tabledataleft">Stop Time: <input class="gentext" type="text" name="stoptime" value="{{stoptimer['stoptime']}}"></td>
+                     <td class="tabledataleft">Auto Stop: <input class="gentext" type="checkbox" name="autostop" value=1 {% if stoptimer['autostop'] == 1 %} checked=true {% endif %}></td>
                 </form>
             </tr>
     </table>
