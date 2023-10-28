@@ -1,5 +1,4 @@
 # /bin/bash
-
-sudo systemctl start gunicorn
 sudo systemctl start nginx
+sudo systemctl start gunicorn.service
 
