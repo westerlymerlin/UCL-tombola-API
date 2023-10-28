@@ -1,7 +1,7 @@
 import json
 import datetime
 
-version = '1.0.0'
+version = '1.0.1'
 
 
 def writesettings():
@@ -16,7 +16,7 @@ def initialise():
                  'control_offset': 40003, 'reading_offset': 40024, 'read_length': 16,
                  'logfilepath': './logs/tombola.log', 'logappname': 'Tombola-Py', 'gunicornpath': './logs/',
                  'cputemp': '/sys/class/thermal/thermal_zone0/temp', 'syslog': '/var/log/syslog',
-                 'shutdowntime': '23:59:59'}
+                 'shutdowntime': '23:59:59', 'autoshutdown': True}
     return isettings
 
 
