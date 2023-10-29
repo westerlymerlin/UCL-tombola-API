@@ -140,3 +140,7 @@ def time_format_check(value):
         return True
     except ValueError:
         return False
+
+
+if __name__ == '__main__':
+    tom = Motor()
