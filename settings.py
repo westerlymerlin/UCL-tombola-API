@@ -2,7 +2,7 @@ import json
 import datetime
 
 
-version = '1.0.1'
+version = '1.0.3'
 
 
 def writesettings():
