@@ -25,7 +25,7 @@ class RPM:
             print('%s RPM' % rev)
             return rev
         else:
-            print('Not enough samples yet')
+            print('Not enough pulses recieved yet')
             return 0
 
 

@@ -3,7 +3,7 @@ import subprocess
 from flask import Flask, render_template, jsonify, request
 from settings import settings, version
 from MotorClass import Motor
-# import logmanager
+import logmanager
 
 app = Flask(__name__)
 tom = Motor()
@@ -44,6 +44,15 @@ def statusdata():
     return jsonify(ctrldata), 201
 
 
+@app.route('/api', methods=['POST'])
+def api():
+    try:
+        print('API request: %s' % request.json)
+        status = tom.parsecontrol(request.json)
+        return jsonify(status), 201
+    except KeyError:
+        return "badly formed json message", 201
+
 @app.route('/pylog')
 def showplogs():
     with open(settings['cputemp'], 'r') as f:
@@ -55,7 +64,7 @@ def showplogs():
     f.close()
     log.reverse()
     logs = tuple(log)
-    return render_template('logs.html', rows=logs, log='X-Y log', cputemperature=cputemperature, version=version)
+    return render_template('logs.html', rows=logs, log='Tombola log', cputemperature=cputemperature, version=version)
 
 
 @app.route('/guaccesslog')
@@ -98,6 +107,7 @@ def showslogs():
                            stdout=subprocess.PIPE).stdout.read().decode(encoding='utf-8')
     logs = log.split('\n')
     return render_template('logs.html', rows=logs, log='system log', cputemperature=cputemperature)
+
 
 
 @app.route('/uscHALT')
