@@ -4,7 +4,7 @@ import requests
 def setspeed(speed):
     message = {"frequency": speed}
     try:
-        resp = requests.post('http://localhost:5000/api', json=message, timeout=1)
+        resp = requests.post('http://localhost/api', json=message, timeout=1)
         return resp.json()
     except requests.exceptions.ConnectTimeout:
         return {'setspeed': 'Timeout Error'}
