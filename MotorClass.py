@@ -2,7 +2,7 @@ import minimalmodbus
 import serial.serialutil
 from datetime import datetime
 from threading import Timer
-from settings import settings, writesettings, version
+from settings import settings, writesettings
 
 
 class Motor:
@@ -28,7 +28,6 @@ class Motor:
         self.autoshutdown = settings['autoshutdown']
         self.autoshutdowntime = settings['shutdowntime']
         self.auto_stop_timer()
-        print('Starting Tombola app version %s' % version)
 
     def forward(self, speed):
         self.direction = 0
@@ -120,14 +119,28 @@ class Motor:
             if stoptime < datetime.now():
                 self.stop()
 
-    def parsecontrol(self, message):
-        if 'frequency' in message.keys():
+    def parse_control_message(self, message):
+        if 'stop' in message.keys():
+            self.stop()
+        elif 'setfreq' in message.keys():
+            if int(message['setfreq']) > 0:
+                self.forward(int(message['setfreq']))
+        elif 'stoptime' in message.keys():
+            if 'autostop' in message.keys():
+                self.set_stop_time(True, message['stoptime'])
+            else:
+                self.set_stop_time(False, message['stoptime'])
+        elif 'frequency' in message.keys():
             speed = int(message['frequency'])
             if speed == 0:
                 self.stop()
             else:
                 self.forward(message['frequency'])
+        else:
+            print('message recieved = %s' % message)  # used for debugging HTML Forms
+        print('Settings updated via web application')
         return self.controller_query()
+
 
 def direction(value):
     if value == 1:
