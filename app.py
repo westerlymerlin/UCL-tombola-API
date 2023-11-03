@@ -5,6 +5,7 @@ from settings import settings, version
 from MotorClass import Motor
 import logmanager
 
+print('Starting Tombola web app version %s' % version)
 app = Flask(__name__)
 tom = Motor()
 
@@ -12,20 +13,7 @@ tom = Motor()
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        reponse = request.form
-        if 'stop' in reponse.keys():
-            tom.stop()
-        elif 'setfreq' in reponse.keys():
-            if int(reponse['setfreq']) > 0:
-                tom.forward(int(reponse['setfreq']))
-        if 'stoptime' in reponse.keys():
-            if 'autostop' in reponse.keys():
-                tom.set_stop_time(True, reponse['stoptime'])
-            else:
-                tom.set_stop_time(False, reponse['stoptime'])
-        else:
-            print(reponse)  # used for debugging HTML Forms
-        print('Settings updated via web application')
+        tom.parse_control_message(request.form)
     return render_template('index.html', version=version, frequency=tom.frequency, stoptimer=tom.get_stop_time())
 
 
@@ -48,10 +36,11 @@ def statusdata():
 def api():
     try:
         print('API request: %s' % request.json)
-        status = tom.parsecontrol(request.json)
+        status = tom.parse_control_message(request.json)
         return jsonify(status), 201
     except KeyError:
         return "badly formed json message", 201
+
 
 @app.route('/pylog')
 def showplogs():
@@ -107,7 +96,6 @@ def showslogs():
                            stdout=subprocess.PIPE).stdout.read().decode(encoding='utf-8')
     logs = log.split('\n')
     return render_template('logs.html', rows=logs, log='system log', cputemperature=cputemperature)
-
 
 
 @app.route('/uscHALT')
