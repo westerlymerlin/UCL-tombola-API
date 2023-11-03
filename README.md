@@ -25,7 +25,7 @@ allow starting the Tombola, stopping it and setting an auto-stop time if it is b
 If you POST a json message to the `http://[url to your server]/api` end point the flast app will process the call and
 return a json message containing the V20 status values.
 
-***API Messahes***
+***API Messages***
 `{"frequency": n}`  Start the motor running at a frequency of n Hz<br>
 `{"frequency": 0}`  Stop the motor<br>
 `{"stoptime": "HH:MM:SS", "autostop": true}` set the controller to auto shut off at HH:MM:SS<br>
