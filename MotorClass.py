@@ -3,6 +3,7 @@ import serial.serialutil
 from datetime import datetime
 from threading import Timer
 from settings import settings, writesettings
+from RPMClass import RPM
 
 
 class Motor:
@@ -27,6 +28,7 @@ class Motor:
         self.running = 0  # O = disabled 1 = enabled
         self.autoshutdown = settings['autoshutdown']
         self.autoshutdowntime = settings['shutdowntime']
+        self.rpm = RPM()
         self.auto_stop_timer()
 
     def forward(self, speed):
@@ -75,19 +77,19 @@ class Motor:
             self.controller.serial.close()
             return {'running': running(self.running), 'reqdirection': direction(self.direction),
                     'reqfrequency': self.frequency, 'direction': direction(data[10]), 'frequency': data[0],
-                    'voltage': data[9], 'current': data[2], 'rpm': data[1]}
+                    'voltage': data[9], 'current': data[2], 'rpm': data[1], 'tombola_speed': self.rpm.get_rpm()}
         except AttributeError:   # RS485 not plugged in
             print('Tombola Error: RS485 controller is not working or not plugged in')
             return {'running': running(self.running), 'reqdirection': direction(self.direction),
                     'reqfrequency': self.frequency, 'direction': 'No RS485 Controller',
                     'frequency': 'No RS485 Controller', 'voltage': 'No RS485 Controller',
-                    'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller'}
+                    'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller', 'tombola_speed': self.rpm.get_rpm()}
         except minimalmodbus.NoResponseError:
             print('Tombola Error: No response from the V20 controller, check it is powered on and connected')
             return {'running': running(self.running), 'reqdirection': direction(self.direction),
                     'reqfrequency': self.frequency, 'direction': 'RS485 Timeout',
                     'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout',
-                    'current': 'RS485 Timeout', 'rpm': 'RS485 Timeout'}
+                    'current': 'RS485 Timeout', 'rpm': 'RS485 Timeout', 'tombola_speed': self.rpm.get_rpm()}
 
     def print_controlword(self):
         data = self.controller.read_register(99, 0, 3)
@@ -164,5 +166,5 @@ def time_format_check(value):
         return False
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # used for standlone testing
     tom = Motor()

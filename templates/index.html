@@ -56,6 +56,11 @@
                     <td class="tabledataleft">Motor RPM</td>
                     <td class="tabledataleft" id="123-rpm">awaiting-data</td>
             </tr>
+            <tr>
+                    <td class="tabledataleft">Tombola RPM</td>
+                    <td class="tabledataleft" id="123-tom-rpm">awaiting-data</td>
+            </tr>
+
       </table>
     <p>&nbsp</p>
     <p><strong>Change Settings</strong></p>
@@ -113,6 +118,8 @@ async function getstatusdata() {
   idtoupdate.innerHTML = statusdata.current;
   var idtoupdate = document.getElementById('123-rpm');
   idtoupdate.innerHTML = statusdata.rpm;
+  var idtoupdate = document.getElementById('123-tom-rpm');
+  idtoupdate.innerHTML = statusdata.tombola_speed;
 
 }
 
