@@ -3,36 +3,31 @@ import subprocess
 from flask import Flask, render_template, jsonify, request
 from settings import settings, version
 from MotorClass import Motor
-import logmanager
+import logmanager  # writes all print output to a logfile
 
 print('Starting Tombola web app version %s' % version)
 app = Flask(__name__)
 tom = Motor()
 
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])  # Default website
 def index():
     if request.method == 'POST':
         tom.parse_control_message(request.form)
     return render_template('index.html', version=version, frequency=tom.frequency, stoptimer=tom.get_stop_time())
 
 
-@app.route('/statusdata', methods=['GET'])
+@app.route('/statusdata', methods=['GET'])  # Status data read by javascript on default website
 def statusdata():
-    # Query the motor controller for current data
-    ctrldata = tom.controller_query()
-
-    # Getting CPU temperature, as before:
-    with open(settings['cputemp'], 'r') as f:
+    ctrldata = tom.controller_query()  # Query the motor controller for current data
+    with open(settings['cputemp'], 'r') as f:  # Get CPU temperature
         log = f.readline()
     f.close()
     cputemperature = round(float(log) / 1000, 1)
     ctrldata['cpu'] = cputemperature
-
     return jsonify(ctrldata), 201
 
 
-@app.route('/api', methods=['POST'])
+@app.route('/api', methods=['POST'])  # API endpoint - requires data to be sent in a json message
 def api():
     try:
         print('API request: %s' % request.json)
@@ -42,7 +37,7 @@ def api():
         return "badly formed json message", 201
 
 
-@app.route('/pylog')
+@app.route('/pylog')  # display the application log
 def showplogs():
     with open(settings['cputemp'], 'r') as f:
         log = f.readline()
@@ -56,7 +51,7 @@ def showplogs():
     return render_template('logs.html', rows=logs, log='Tombola log', cputemperature=cputemperature, version=version)
 
 
-@app.route('/guaccesslog')
+@app.route('/guaccesslog')   # display the gunicorn access log
 def showgalogs():
     with open(settings['cputemp'], 'r') as f:
         log = f.readline()
@@ -71,7 +66,7 @@ def showgalogs():
                            cputemperature=cputemperature, version=version)
 
 
-@app.route('/guerrorlog')
+@app.route('/guerrorlog')  # display the gunicorn error log
 def showgelogs():
     with open(settings['cputemp'], 'r') as f:
         log = f.readline()
@@ -86,7 +81,7 @@ def showgelogs():
                            cputemperature=cputemperature, version=version)
 
 
-@app.route('/syslog')
+@app.route('/syslog')  # display the raspberry pi system log
 def showslogs():
     with open(settings['cputemp'], 'r') as f:
         log = f.readline()
@@ -98,7 +93,7 @@ def showslogs():
     return render_template('logs.html', rows=logs, log='system log', cputemperature=cputemperature)
 
 
-@app.route('/uscHALT')
+@app.route('/uscHALT')  # remote shutdown of the pi
 def shutdown_the_server():
     os.system('sudo halt')
     return 'The server is now shutting down, please give it a minute before pulling the power. \nCheers G'
