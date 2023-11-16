@@ -37,7 +37,7 @@ class Motor:
         self.frequency = speed
         self.running = 1
         try:
-            self.write_register(self.command_control_register, settings['forward_word'])
+            self.write_register(self.command_control_register, settings['STW_forward'])
             self.controller_command([self.frequency, self.running, self.direction, 1])
         except AttributeError:
             print('MotorClass: forward function error No RS483 Controller')
