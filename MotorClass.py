@@ -9,6 +9,7 @@ from RPMClass import RPM
 class Motor:
     def __init__(self):
         self.command_start_register = settings['control_offset'] - 40001
+        self.command_control_register = settings['STW_register'] - 40001
         self.query_start_register = settings['reading_offset'] - 40001
         try:
             self.controller = minimalmodbus.Instrument(settings['port'], settings['station'],
@@ -36,6 +37,7 @@ class Motor:
         self.frequency = speed
         self.running = 1
         try:
+            self.write_register(self.command_control_register, settings['forward_word'])
             self.controller_command([self.frequency, self.running, self.direction, 1])
         except AttributeError:
             print('MotorClass: forward function error No RS483 Controller')
@@ -48,6 +50,7 @@ class Motor:
         self.frequency = speed
         self.running = 1
         try:
+            self.write_register(self.command_control_register, settings['STW_reverse'])
             self.controller_command([self.frequency, self.running, self.direction, 1])
         except AttributeError:
             print('MotorClass: reverse function error No RS483 Controller')
@@ -60,6 +63,7 @@ class Motor:
         self.frequency = 0
         self.running = 0
         try:
+            self.write_register(self.command_control_register, settings['STW_stop'])
             self.controller_command([self.frequency, self.running, self.direction, 0])
         except AttributeError:
             print('MotorClass: stop function error No RS483 Controller')
@@ -76,7 +80,7 @@ class Motor:
             data = self.controller.read_registers(self.query_start_register, self.read_length, 3)
             self.controller.serial.close()
             return {'running': running(self.running), 'reqdirection': direction(self.direction),
-                    'reqfrequency': self.frequency, 'direction': direction(data[10]), 'frequency': data[0],
+                    'reqfrequency': self.frequency, 'direction': data[10], 'frequency': data[0],
                     'voltage': data[9], 'current': data[2], 'rpm': data[1], 'tombola_speed': self.rpm.get_rpm()}
         except AttributeError:   # RS485 not plugged in
             print('Tombola Error: RS485 controller is not working or not plugged in')
