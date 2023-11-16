@@ -76,12 +76,18 @@
                     <td class="tabledataleft"><button class="gentext" form="stopform" formmethod="POST"  onclick="location.href='/'">Stop Tombola</button></td>
                      <input type="hidden" name="stop" value="1">
                 </form>
-            </tr>
-            <tr>
+            </tr>c
+            <tr>c
                 <form id="timeform">
                     <td class="tabledataleft"><button class="gentext" form="timeform" formmethod="POST"  onclick="location.href='/'">Update Stop Time</button></td>
                      <td class="tabledataleft">Stop Time: <input class="gentext" type="text" name="stoptime" value="{{stoptimer['stoptime']}}"></td>
                      <td class="tabledataleft">Auto Stop: <input class="gentext" type="checkbox" name="autostop" value=1 {% if stoptimer['autostop'] == 1 %} checked=true {% endif %}></td>
+                </form>
+            </tr>
+            <tr>
+                <form id="resetform">
+                <td class="tabledataleft"><button class="gentext" form="resetform" formmethod="POST"  onclick="location.href='/'">Reset v20</button></td>
+                <input type="hidden" name="reset" value="1">
                 </form>
             </tr>
     </table>
