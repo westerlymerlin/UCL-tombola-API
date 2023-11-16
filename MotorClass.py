@@ -124,6 +124,12 @@ class Motor:
     def parse_control_message(self, message):
         if 'stop' in message.keys():
             self.stop()
+        if 'forward' in message.keys():
+            self.forward(message['forward'])
+        if 'reverse' in message.keys():
+            self.reverse(message['reverse'])
+        if 'register' in message.keys():
+            self.write_register(message['register'], message['word'])
         elif 'setfreq' in message.keys():
             if int(message['setfreq']) > 0:
                 self.forward(int(message['setfreq']))
