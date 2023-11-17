@@ -35,7 +35,7 @@ class RPM:
                 self.timequeue.pop(0)
             return rev
         else:
-            print('Not enough RPM pulses recieved, checl +12v is connected')
+            # print('Not enough RPM pulses recieved, please check +12v is connected and the tombola is spining')
             return 0
 
 

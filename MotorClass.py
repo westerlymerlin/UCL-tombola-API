@@ -77,20 +77,20 @@ class Motor:
             actual_data = self.controller.read_registers(self.query_start_register, self.read_length, 3)
             setting_data = self.controller.read_registers(self.command_start_register, 4, 3)
             self.controller.serial.close()
-            return {'running': running(self.running), 'reqdirection': setting_data[2],
-                    'reqfrequency': setting_data[0], 'direction': actual_data[10], 'frequency': actual_data[0],
-                    'voltage': actual_data[9], 'current': actual_data[2], 'rpm': actual_data[1],
-                    'tombola_speed': self.rpm.get_rpm()}
+            return {'running': running(self.running), 'reqdirection': direction(self.direction),
+                    'reqfrequency': setting_data[0] / 100, 'direction': direction(setting_data[2]),
+                    'frequency': actual_data[0] / 100, 'voltage': actual_data[9], 'current': actual_data[2] / 100,
+                    'rpm': actual_data[1], 'tombola_speed': self.rpm.get_rpm()}
         except AttributeError:   # RS485 not plugged in
             print('Tombola Error: RS485 controller is not working or not plugged in')
-            return {'running': running(self.running), 'reqdirection': self.direction,
-                    'reqfrequency': self.frequency, 'direction': 'No RS485 Controller',
+            return {'running': running(self.running), 'reqdirection': direction(self.direction),
+                    'reqfrequency': self.frequency / 100, 'direction': 'No RS485 Controller',
                     'frequency': 'No RS485 Controller', 'voltage': 'No RS485 Controller',
                     'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller', 'tombola_speed': self.rpm.get_rpm()}
         except minimalmodbus.NoResponseError:
             print('Tombola Error: No response from the V20 controller, check it is powered on and connected')
-            return {'running': running(self.running), 'reqdirection': self.direction,
-                    'reqfrequency': self.frequency, 'direction': 'RS485 Timeout',
+            return {'running': running(self.running), 'reqdirection': direction(self.direction),
+                    'reqfrequency': self.frequency / 100, 'direction': 'RS485 Timeout',
                     'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout',
                     'current': 'RS485 Timeout', 'rpm': 'RS485 Timeout', 'tombola_speed': self.rpm.get_rpm()}
 
@@ -181,8 +181,10 @@ class Motor:
 def direction(value):
     if value == 1:
         return 'Reverse'
-    else:
+    elif value == 0:
         return 'Forward'
+    else:
+        return value
 
 
 def running(value):
