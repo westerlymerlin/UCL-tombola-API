@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 
-version = '1.2.1'
+version = '1.2.2'
 
 
 def writesettings():
@@ -54,13 +54,16 @@ def readsettings():
 
 def loadsettings():
     global settings
+    settingschanged = 0
     fsettings = readsettings()
     for item in settings.keys():
         try:
             settings[item] = fsettings[item]
         except KeyError:
             print('settings[%s] Not found in json file using default' % item)
-            writesettings()
+            settingschanged = 1
+    if settingschanged == 1:
+        writesettings()
 
 
 settings = initialise()

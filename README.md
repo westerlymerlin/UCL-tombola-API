@@ -26,7 +26,13 @@ If you POST a json message to the `http://[url to your server]/api` end point th
 return a json message containing the V20 status values.
 
 ***API Messages***
-`{"frequency": n}`  Start the motor running at a frequency of n Hz<br>
+`{"forward": n}`  Start the motor running forwardat a frequency of n where n is 0 - 10000<br>
+`{"frequency": 0}`  Stop the motor<br>
+`{"reverse": n}`  Start the motor running forwardat a frequency of n where n is 0 - 10000<br>
+`{"rpm": True}`  Read the tombola RPM<br>
+`{"rpm_data": True}`  Read the tombola timing data from 3 revolutions<br>
+`{"write_register": rr, "word": ww}`  Write the word ww to the register rr<br>
+`{"read_register": rr}`  Read the value from the register rr<br>
 `{"frequency": 0}`  Stop the motor<br>
 `{"stoptime": "HH:MM:SS", "autostop": true}` set the controller to auto shut off at HH:MM:SS<br>
 `{"stoptime": "HH:MM:SS", "autostop": false}` Disable auto stop
