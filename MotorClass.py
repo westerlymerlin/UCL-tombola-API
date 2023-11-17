@@ -99,6 +99,18 @@ class Motor:
         self.controller.serial.close()
         print(data)
 
+    def read_register(self, reg):
+        try:
+            data = self.controller.read_register(reg, 0, 3)
+            self.controller.serial.close()
+            return {'register': reg, 'word': data}
+        except AttributeError:
+            print('MotorClass: read_register function error No RS483 Controller')
+            return {'register': reg, 'word': 'No RS485 Controller'}
+        except minimalmodbus.NoResponseError:
+            print('MotorClass: read_register function error RS485 timeout')
+            return {'register': reg, 'word': 'RS485 Timeout'}
+
     def write_register(self, reg, controlword):
         try:
             self.controller.write_register(reg, controlword)
@@ -138,8 +150,14 @@ class Motor:
             self.reverse(message['reverse'])
         elif 'reset' in message.keys():
             self.write_register(self.stw_control_register, settings['STW_forward'])
-        elif 'register' in message.keys():
-            self.write_register(message['register'], message['word'])
+        elif 'write_register' in message.keys():
+            self.write_register(message['write_register'], message['word'])
+        elif 'read_register' in message.keys():
+            return self.read_register(message['read_register'])
+        elif 'rpm_data' in message.keys():
+            return self.rpm.timequeue
+        elif 'rpm' in message.keys():
+            return {'rpm': self.rpm.get_rpm()}
         elif 'setfreq' in message.keys():
             if int(message['setfreq']) > 0:
                 self.forward(int(message['setfreq']))
