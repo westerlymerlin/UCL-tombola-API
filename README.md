@@ -14,6 +14,8 @@ Flask for the Web application server. A USB RS485 controller provides connectivi
 library **Minimal Modbus** is used for the Modbus protocol.<br>
 **Minimal Modbus Library Documentation** https://minimalmodbus.readthedocs.io/en/stable/
 
+Full documentation can be found in the file https://github.com/westerlymerlin/UCL-tombola/blob/master/docs/Tombola%20Functional%20Description.docx
+
 ---
 **Web Application**
 
@@ -26,14 +28,13 @@ If you POST a json message to the `http://[url to your server]/api` end point th
 return a json message containing the V20 status values.
 
 ***API Messages***
-`{"forward": n}`  Start the motor running forwardat a frequency of n where n is 0 - 10000<br>
+`{"forward": n}`  Start the motor running forward at a frequency of n where n is 0 - 10000<br>
 `{"frequency": 0}`  Stop the motor<br>
-`{"reverse": n}`  Start the motor running forwardat a frequency of n where n is 0 - 10000<br>
+`{"reverse": n}`  Start the motor running in reverse at a frequency of n where n is 0 - 10000<br>
 `{"rpm": True}`  Read the tombola RPM<br>
 `{"rpm_data": True}`  Read the tombola timing data from 3 revolutions<br>
 `{"write_register": rr, "word": ww}`  Write the word ww to the register rr<br>
 `{"read_register": rr}`  Read the value from the register rr<br>
-`{"frequency": 0}`  Stop the motor<br>
 `{"stoptime": "HH:MM:SS", "autostop": true}` set the controller to auto shut off at HH:MM:SS<br>
 `{"stoptime": "HH:MM:SS", "autostop": false}` Disable auto stop
 
