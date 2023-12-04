@@ -4,13 +4,15 @@ from datetime import datetime
 from threading import Timer
 from settings import settings, writesettings
 from RPMClass import RPM
+from logmanager import logger
 
 
 class Motor:
     def __init__(self):
-        self.command_start_register = settings['control_offset'] - 40001
-        self.stw_control_register = settings['STW_register'] - 40001
-        self.query_start_register = settings['reading_offset'] - 40001
+        self.register_offset = settings['register_offset']
+        self.command_start_register = settings['control_offset'] - self.register_offset
+        self.stw_control_register = settings['STW_register'] - self.register_offset
+        self.query_start_register = settings['reading_offset'] - self.register_offset
         try:
             self.controller = minimalmodbus.Instrument(settings['port'], settings['station'],
                                                        minimalmodbus.MODE_RTU)
@@ -21,8 +23,9 @@ class Motor:
             self.controller.serial.timeout = settings['timeout']
             self.controller.clear_buffers_before_each_transaction = settings['clear_buffers_before_call']
             self.controller.close_port_after_each_call = settings['clear_buffers_after_call']
+            logger.info('MotorClass RS485 controller setup with modbus')
         except serial.serialutil.SerialException:
-            print('MotorClass: Error - no controller connected, please check RS485 port address is correct')
+            logger.error('MotorClass: init Error - no controller connected, please check RS485 port address is correct')
         self.read_length = settings['read_length']
         self.direction = 0  # 0 = forward, 1 = reverse
         self.frequency = 0  # 0 - 100%
@@ -39,10 +42,10 @@ class Motor:
         try:
             self.controller_command([self.frequency, self.running, self.direction, 1])
         except AttributeError:
-            print('MotorClass: forward function error No RS483 Controller')
+            logger.error('MotorClass: forward function error No RS483 Controller')
         except minimalmodbus.NoResponseError:
-            print('MotorClass: forward function error RS485 timeout')
-        print('Tombola Command: Forward %s Hz' % speed)
+            logger.error('MotorClass: forward function error RS485 timeout')
+        logger.info('Tombola Command: Forward %s Hz' % speed)
 
     def reverse(self, speed):
         self.direction = 1
@@ -51,10 +54,10 @@ class Motor:
         try:
             self.controller_command([self.frequency, self.running, self.direction, 1])
         except AttributeError:
-            print('MotorClass: reverse function error No RS483 Controller')
+            logger.error('MotorClass: reverse function error No RS483 Controller')
         except minimalmodbus.NoResponseError:
-            print('MotorClass: reverse function error RS485 timeout')
-        print('Tombola Command: Reverse %s Hz' % speed)
+            logger.error('MotorClass: reverse function error RS485 timeout')
+        logger.info('Tombola Command: Reverse %s Hz' % speed)
 
     def stop(self):
         self.direction = 0
@@ -63,10 +66,10 @@ class Motor:
         try:
             self.controller_command([self.frequency, self.running, self.direction, 0])
         except AttributeError:
-            print('MotorClass: stop function error No RS483 Controller')
+            logger.error('MotorClass: stop function error No RS483 Controller')
         except minimalmodbus.NoResponseError:
-            print('MotorClass: stop function error RS485 timeout')
-        print('Tombola Command: STOP')
+            logger.error('MotorClass: stop function error RS485 timeout')
+        logger.info('Tombola Command: STOP')
 
     def controller_command(self, message):
         self.controller.write_registers(self.command_start_register, message)
@@ -82,13 +85,13 @@ class Motor:
                     'frequency': actual_data[0] / 100, 'voltage': actual_data[9], 'current': actual_data[2] / 100,
                     'rpm': actual_data[1], 'tombola_speed': self.rpm.get_rpm()}
         except AttributeError:   # RS485 not plugged in
-            print('Tombola Error: RS485 controller is not working or not plugged in')
+            logger.error('Tombola Query Error: RS485 controller is not working or not plugged in')
             return {'running': running(self.running), 'reqdirection': direction(self.direction),
                     'reqfrequency': self.frequency / 100, 'direction': 'No RS485 Controller',
                     'frequency': 'No RS485 Controller', 'voltage': 'No RS485 Controller',
                     'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller', 'tombola_speed': self.rpm.get_rpm()}
         except minimalmodbus.NoResponseError:
-            print('Tombola Error: No response from the V20 controller, check it is powered on and connected')
+            logger.error('Tombola Query Error: No response from the V20 controller, check it is powered on and connected')
             return {'running': running(self.running), 'reqdirection': direction(self.direction),
                     'reqfrequency': self.frequency / 100, 'direction': 'RS485 Timeout',
                     'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout',
@@ -97,28 +100,30 @@ class Motor:
     def print_controlword(self):
         data = self.controller.read_register(99, 0, 3)
         self.controller.serial.close()
-        print(data)
+        logger.info('Motorclass: read control word: %s' % data)
 
     def read_register(self, reg):
         try:
             data = self.controller.read_register(reg, 0, 3)
             self.controller.serial.close()
+            logger.info('Motor Class read registry: Registry %s. Word %s' % (reg, data))
             return {'register': reg, 'word': data}
         except AttributeError:
-            print('MotorClass: read_register function error No RS483 Controller')
+            logger.error('MotorClass: read_register function error No RS483 Controller')
             return {'register': reg, 'word': 'No RS485 Controller'}
         except minimalmodbus.NoResponseError:
-            print('MotorClass: read_register function error RS485 timeout')
+            logger.error('MotorClass: read_register function error RS485 timeout')
             return {'register': reg, 'word': 'RS485 Timeout'}
 
     def write_register(self, reg, controlword):
         try:
             self.controller.write_register(reg, controlword)
             self.controller.serial.close()
+            logger.info('Motor Class write registry: Registry %s. Word %s' % (reg, controlword))
         except AttributeError:
-            print('MotorClass: write_register function error No RS483 Controller')
+            logger.error('MotorClass: write_register function error No RS483 Controller')
         except minimalmodbus.NoResponseError:
-            print('MotorClass: write_register function error RS485 timeout')
+            logger.error('MotorClass: write_register function error RS485 timeout')
 
     def set_stop_time(self, autostop, stoptime):
         if time_format_check(stoptime):
@@ -126,6 +131,7 @@ class Motor:
             settings['autoshutdown'] = autostop
             self.autoshutdowntime = stoptime
             settings['shutdowntime'] = stoptime
+            logger.info('Motor Class: Write settings')
             writesettings()
 
     def get_stop_time(self):
@@ -151,9 +157,9 @@ class Motor:
         elif 'reset' in message.keys():
             self.write_register(self.stw_control_register, settings['STW_forward'])
         elif 'write_register' in message.keys():
-            self.write_register(message['write_register'], message['word'])
+            self.write_register(message['write_register'] - self.register_offset, message['word'])
         elif 'read_register' in message.keys():
-            return self.read_register(message['read_register'])
+            return self.read_register(message['read_register'] - self.register_offset)
         elif 'rpm_data' in message.keys():
             return self.rpm.timequeue
         elif 'rpm' in message.keys():
@@ -173,8 +179,8 @@ class Motor:
             else:
                 self.forward(message['frequency'])
         else:
-            print('message recieved = %s' % message)  # used for debugging HTML Forms
-        print('Settings updated via web application')
+            logger.info('message recieved = %s' % message)  # used for debugging HTML Forms
+        logger.info('Settings updated via web application')
         return self.controller_query()
 
 
