@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 
-version = '1.2.3'
+version = '1.2.4'
 
 
 def writesettings():
@@ -21,10 +21,10 @@ def initialise():  # These are the default values written to the settings.json f
                  'station': 1,
                  'clear_buffers_before_call': True,
                  'clear_buffers_after_call': True, 
+                 'register_offset': 40001,
                  'control_offset': 40003,
                  'STW_register': 40100,
-                 'STW_forward': 1151,
-                 'STW_reverse': 3199,
+                 'STW_forward': 1142,
                  'STW_stop': 0,
                  'reading_offset': 40024,
                  'read_length': 16,

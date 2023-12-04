@@ -1,6 +1,7 @@
 import datetime
 from RPi import GPIO
 from settings import settings
+from logmanager import logger
 
 
 class RPM:
@@ -18,7 +19,7 @@ class RPM:
         GPIO.output(settings['rpm_active_LED'], GPIO.HIGH)  # switch on running LED
 
     def __del__(self):
-        print("RPM deleted")
+        logger.info("RPM deleted")
         GPIO.cleanup()
 
     def recievedpulse(self, pin):
