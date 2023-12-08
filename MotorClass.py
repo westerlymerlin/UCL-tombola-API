@@ -179,7 +179,7 @@ class Motor:
             else:
                 self.forward(message['frequency'])
         else:
-            logger.info('message recieved = %s' % message)  # used for debugging HTML Forms
+            logger.info('API message recieved but not processed  = %s' % message)  # used for debugging HTML Forms
         logger.info('Settings updated via web application')
         return self.controller_query()
 
