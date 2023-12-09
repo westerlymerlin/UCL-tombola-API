@@ -91,7 +91,8 @@ class Motor:
                     'frequency': 'No RS485 Controller', 'voltage': 'No RS485 Controller',
                     'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller', 'tombola_speed': self.rpm.get_rpm()}
         except minimalmodbus.NoResponseError:
-            logger.error('Tombola Query Error: No response from the V20 controller, check it is powered on and connected')
+            logger.error('Tombola Query Error: No response from the V20 controller, '
+                         'check it is powered on and connected')
             return {'running': running(self.running), 'reqdirection': direction(self.direction),
                     'reqfrequency': self.frequency / 100, 'direction': 'RS485 Timeout',
                     'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout',
@@ -149,6 +150,7 @@ class Motor:
 
     def parse_control_message(self, message):
         if 'stop' in message.keys():
+            logger.info('Stop request recieved web application')
             self.stop()
         elif 'forward' in message.keys():
             self.forward(message['forward'])
@@ -161,7 +163,7 @@ class Motor:
         elif 'read_register' in message.keys():
             return self.read_register(message['read_register'] - self.register_offset)
         elif 'rpm_data' in message.keys():
-            return self.rpm.timequeue
+            return self.rpm.get_rpm()
         elif 'rpm' in message.keys():
             return {'rpm': self.rpm.get_rpm()}
         elif 'setfreq' in message.keys():
@@ -172,15 +174,16 @@ class Motor:
                 self.set_stop_time(True, message['stoptime'])
             else:
                 self.set_stop_time(False, message['stoptime'])
+            logger.info('Stop time updated via web application')
         elif 'frequency' in message.keys():
+            logger.info('Frequency updated via web application')
             speed = int(message['frequency'])
             if speed == 0:
                 self.stop()
             else:
                 self.forward(message['frequency'])
         else:
-            logger.info('API message recieved but not processed  = %s' % message)  # used for debugging HTML Forms
-        logger.info('Settings updated via web application')
+            logger.info('message recieved but not processed  = %s' % message)  # used for debugging HTML Forms
         return self.controller_query()
 
 

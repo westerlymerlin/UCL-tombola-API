@@ -9,9 +9,11 @@ logger.info('Starting Tombola web app version %s' % version)
 app = Flask(__name__)
 tom = Motor()
 
+
 @app.route('/', methods=['GET', 'POST'])  # Default website
 def index():
     if request.method == 'POST':
+        logger.info('Web Post recieved')
         tom.parse_control_message(request.form)
     return render_template('index.html', version=version, frequency=tom.frequency, stoptimer=tom.get_stop_time())
 
@@ -30,11 +32,20 @@ def statusdata():
 @app.route('/api', methods=['POST'])  # API endpoint - requires data to be sent in a json message
 def api():
     try:
-        logger.info('API request: %s' % request.json)
-        status = tom.parse_control_message(request.json)
-        return jsonify(status), 201
+        #  print(request.headers)
+        if 'Api-Key' in request.headers.keys():  # check api key exists
+            if request.headers['api-key'] == settings['api-key']:  # check for correct API key
+                print('API valid request: %s' % request.json)
+                status = tom.parse_control_message(request.json)
+                return jsonify(status), 201
+            else:
+                logger.warning('API: access attempt using an incorrect token %s' % request.remote_addr)
+                return 'access token(s) unuthorised', 401
+        else:
+            logger.warning('API: access attempt without a token %s' % request.remote_addr)
+            return 'access token(s) incorrect', 401
     except KeyError:
-        return "badly formed json message", 201
+        return "badly formed json message", 400
 
 
 @app.route('/pylog')  # display the application log
@@ -73,12 +84,6 @@ def showslogs():
                            stdout=subprocess.PIPE).stdout.read().decode(encoding='utf-8')
     logs = log.split('\n')
     return render_template('logs.html', rows=logs, log='system log', version=version)
-
-
-@app.route('/uscHALT')  # remote shutdown of the pi
-def shutdown_the_server():
-    os.system('sudo halt')
-    return 'The server is now shutting down, please give it a minute before pulling the power. \nCheers G'
 
 
 def reboot():

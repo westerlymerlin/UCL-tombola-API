@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 
-version = '1.2.4'
+version = '1.2.5'
 
 
 def writesettings():
@@ -14,6 +14,7 @@ def writesettings():
 def initialise():  # These are the default values written to the settings.json file the first time the app is run
     isettings = {'LastSave': '01/01/2000 00:00:01',
                  'port': '/dev/ttyUSB0',
+                 'api-key': '57vZPotsJ1VvRlnRKLG4',
                  'baud': 9600,
                  'bytesize': 8,
                  'stopbits': 1,
