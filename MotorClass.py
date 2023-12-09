@@ -163,7 +163,7 @@ class Motor:
         elif 'read_register' in message.keys():
             return self.read_register(message['read_register'] - self.register_offset)
         elif 'rpm_data' in message.keys():
-            return self.rpm.get_rpm()
+            return self.rpm.get_rpm_data()
         elif 'rpm' in message.keys():
             return {'rpm': self.rpm.get_rpm()}
         elif 'setfreq' in message.keys():
