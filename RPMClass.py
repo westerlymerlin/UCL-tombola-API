@@ -39,6 +39,12 @@ class RPM:
             # print('Not enough RPM pulses recieved, please check +12v is connected and the tombola is spining')
             return 0
 
+    def get_rpm_data(self):
+        returntime = []
+        for item in self.timequeue:
+            returntime.append(datetime.datetime.strftime(item, '%H:%M:%S.%f'))
+        return returntime
+
 
 if __name__ == '__main__':  # used for standlone testing
     rpm = RPM()
