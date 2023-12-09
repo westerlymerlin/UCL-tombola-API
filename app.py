@@ -13,7 +13,12 @@ tom = Motor()
 @app.route('/', methods=['GET', 'POST'])  # Default website
 def index():
     if request.method == 'POST':
-        logger.info('Web Post recieved')
+        # print(request.form)
+        if len(request.form) == 0:
+            logger.info('Index page: Invalid Web Post Recieved - returning 405')
+            return '<!doctype html><html lang=en><title>405 Method Not Allowed</title><h1>Method Not Allowed</h1>' \
+                   '<p>The method is not allowed for the requested URL.</p>', 405
+        logger.info('Index page: Web Post recieved')
         tom.parse_control_message(request.form)
     return render_template('index.html', version=version, frequency=tom.frequency, stoptimer=tom.get_stop_time())
 
@@ -35,7 +40,7 @@ def api():
         #  print(request.headers)
         if 'Api-Key' in request.headers.keys():  # check api key exists
             if request.headers['api-key'] == settings['api-key']:  # check for correct API key
-                print('API valid request: %s' % request.json)
+                print('API: valid request: %s' % request.json)
                 status = tom.parse_control_message(request.json)
                 return jsonify(status), 201
             else:
@@ -45,6 +50,7 @@ def api():
             logger.warning('API: access attempt without a token %s' % request.remote_addr)
             return 'access token(s) incorrect', 401
     except KeyError:
+        logger.warning('API: bad json message %s' % request.remote_addr)
         return "badly formed json message", 400
 
 
