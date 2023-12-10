@@ -4,7 +4,7 @@
 echo "
 **** pulling the master branch from github ****
 "
-cd /home/tompi/github/UCL-ICPMS-Data-Node/
+cd /home/tompi/github/UCL-tombola/
 git pull origin master
 cd /home/tompu/
 
