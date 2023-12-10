@@ -28,7 +28,7 @@ allow starting the Tombola, stopping it and setting an auto-stop time if it is b
 If you POST a json message to the `http://[url to your server]/api` end point the flast app will process the call and
 return a json message containing the V20 status values.
 
-***API Messages***
+**API Messages**
 <br>
 `{"forward": n}`  Start the motor running forward at a frequency of n where n is 0 - 10000<br>
 `{"frequency": 0}`  Stop the motor<br>
@@ -40,11 +40,9 @@ return a json message containing the V20 status values.
 `{"stoptime": "HH:MM:SS", "autostop": true}` set the controller to auto shut off at HH:MM:SS<br>
 `{"stoptime": "HH:MM:SS", "autostop": false}` Disable auto stop
 
-
-
-
 ---
-***Shell Commands:***
+
+**Shell Commands**
 <br>
 These can be run from a the console (via ssh or direct on the raspberry pi) to upgrade to the latest version of the
 python code:<br>
@@ -57,7 +55,9 @@ Less often used comamnds used for troubelshooting:<br>
 `restartservices.sh` Stop, then start the gunicorn and nginx services<br>
 `status.sh` Show the status of the gunicorn and nginx services<br>
 <br>
+
 ---
+
 **settings.json changes for com port**
 <br>
 Run the MortorClass.py file first, it will generate a fresh settings.json file<br>
