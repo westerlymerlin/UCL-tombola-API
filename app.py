@@ -1,4 +1,3 @@
-import os
 import subprocess
 from flask import Flask, render_template, jsonify, request
 from settings import settings, version
@@ -15,7 +14,8 @@ def index():
     if request.method == 'POST':
         # print(request.form)
         if len(request.form) == 0:
-            logger.info('Index page: Invalid Web Post Recieved - returning 405')
+            logger.warn('Index page: Invalid Web Post Recieved - returning 405 to %s' %
+                        request.headers['X-Forwarded-For'])
             return '<!doctype html><html lang=en><title>405 Method Not Allowed</title><h1>Method Not Allowed</h1>' \
                    '<p>The method is not allowed for the requested URL.</p>', 405
         logger.info('Index page: Web Post recieved')
@@ -44,13 +44,13 @@ def api():
                 status = tom.parse_control_message(request.json)
                 return jsonify(status), 201
             else:
-                logger.warning('API: access attempt using an incorrect token %s' % request.remote_addr)
+                logger.warning('API: access attempt using an ivalid token from %s' % request.headers['X-Forwarded-For'])
                 return 'access token(s) unuthorised', 401
         else:
-            logger.warning('API: access attempt without a token %s' % request.remote_addr)
+            logger.warning('API: access attempt without a token from %s' % request.headers['X-Forwarded-For'])
             return 'access token(s) incorrect', 401
     except KeyError:
-        logger.warning('API: bad json message %s' % request.remote_addr)
+        logger.warning('API: bad json message from %s' % request.headers['X-Forwarded-For'])
         return "badly formed json message", 400
 
 
@@ -90,11 +90,6 @@ def showslogs():
                            stdout=subprocess.PIPE).stdout.read().decode(encoding='utf-8')
     logs = log.split('\n')
     return render_template('logs.html', rows=logs, log='system log', version=version)
-
-
-def reboot():
-    logger.warn('System is restarting now')
-    os.system('sudo reboot')
 
 
 if __name__ == '__main__':
