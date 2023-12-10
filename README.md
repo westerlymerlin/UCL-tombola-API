@@ -1,6 +1,7 @@
 # UCL-tombola
 
-An application to control the UCL River Simulator.<br>
+**An application to control the UCL River Simulator.**
+<br>
 The River simulator consistes of a large (1m diameter) drum that can contain water, cement blocks simulate rocks on the riverbed.
 The whole contraption is driven by a 1/4 hp 3 phase motor.
 
@@ -18,16 +19,17 @@ Full documentation can be found in the file https://github.com/westerlymerlin/UC
 
 ---
 **Web Application**
-
+<br>
 Accessing the URL `http://[url to your server]/api` via a web browser will open that status web page. It has buttons to
 allow starting the Tombola, stopping it and setting an auto-stop time if it is being left unatended.
 
 **Direct API Calls**
-
+<br>
 If you POST a json message to the `http://[url to your server]/api` end point the flast app will process the call and
 return a json message containing the V20 status values.
 
 ***API Messages***
+<br>
 `{"forward": n}`  Start the motor running forward at a frequency of n where n is 0 - 10000<br>
 `{"frequency": 0}`  Stop the motor<br>
 `{"reverse": n}`  Start the motor running in reverse at a frequency of n where n is 0 - 10000<br>
@@ -42,7 +44,8 @@ return a json message containing the V20 status values.
 
 
 ---
-**Shell Commands:**<br>
+***Shell Commands:***
+<br>
 These can be run from a the console (via ssh or direct on the raspberry pi) to upgrade to the latest version of the
 python code:<br>
 `git-pull.sh`   Pull the latest code from the master branch of github to a staging folder `~/github/UCL-tombola`<br>
@@ -56,7 +59,7 @@ Less often used comamnds used for troubelshooting:<br>
 <br>
 ---
 **settings.json changes for com port**
-
+<br>
 Run the MortorClass.py file first, it will generate a fresh settings.json file<br>
 Plug in the USB RS485 controller and find the port number (*com1* to *com7* on a PC or */dev/ttyUSB0* to
 */dev/ttyUSB9* on a mac or Raspberry Pi)  <br>
