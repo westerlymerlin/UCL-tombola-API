@@ -6,7 +6,7 @@ echo "
 "
 cd /home/tompi/github/UCL-tombola/
 git pull origin master
-cd /home/tompu/
+cd /home/tompi/
 
 echo "
 ******** git pull completed ********
