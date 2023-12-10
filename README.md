@@ -42,19 +42,18 @@ return a json message containing the V20 status values.
 
 
 ---
-**MotorClass.py Commands:**
-
-`tom.forward( int )`                  set the 40003 (frequency setpoint) to int, 40004 (Run Enable) to 1, 40005
- (Forward/reverse command) to 0, 40006 (Start command) to 1<br>
-`tom.reverse( int )`                set the 40003 (frequency setpoint) to int, 40004 (Run Enable) to 1, 40005
-(Forward/reverse command) to 1, 40006 (Start command) to 1<br>
-`tom.stop()`                        set the 40003 (frequency setpoint) to 0, 40004 (Run Enable) to 0, 40005
-(Forward/reverse command) to 0, 40006 (Start command) to 0<br>
-`tom.controller_query()`            returns the values of registers 40024 to 40039<br>
-`tom.print_controlword()`            prints the value from register 99(STW)<br>
-`tom.writeregister(int1, int2)`      will write the value **int2** into the register **int1**
-e.g. `tom.writeregister(99, 129)` writes the value **129** into register **99**
-
+**Shell Commands:**<br>
+These can be run from a the console (via ssh or direct on the raspberry pi) to upgrade to the latest version of the
+python code:<br>
+`git-pull.sh`   Pull the latest code from the master branch of github to a staging folder `~/github/UCL-tombola`<br>
+`deploy-from-git.sh`  Deploye the code from the staging folder into the home folder and restarts the python web app<br>
+<br>
+Less often used comamnds used for troubelshooting:<br>
+`stopservices.sh` Stop the gunicorn and nginx services<br>
+`startservices.sh` Start the gunicorn and nginx services<br>
+`restartservices.sh` Stop, then start the gunicorn and nginx services<br>
+`status.sh` Show the status of the gunicorn and nginx services<br>
+<br>
 ---
 **settings.json changes for com port**
 
