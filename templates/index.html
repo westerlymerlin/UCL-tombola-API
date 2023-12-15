@@ -7,6 +7,38 @@
 <title>UCL Department of Earth Sciences - Tombola Server</title>
 <link href="{{ url_for('static',filename='css/text.css') }}" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+<script>
+
+setInterval(getstatusdata, 1000);
+
+async function getstatusdata() {
+  const response = await fetch("/statusdata");
+  const statusdata = await response.json();
+  var idtoupdate = document.getElementById('123-cpu');
+  idtoupdate.innerHTML = statusdata.cpu;
+  var idtoupdate = document.getElementById('456-running');
+  idtoupdate.innerHTML = statusdata.running;
+  var idtoupdate = document.getElementById('123-direction');
+  idtoupdate.innerHTML = statusdata.direction;
+  var idtoupdate = document.getElementById('456-direction');
+  idtoupdate.innerHTML = statusdata.reqdirection;
+  var idtoupdate = document.getElementById('123-frequency');
+  idtoupdate.innerHTML = statusdata.frequency;
+  var idtoupdate = document.getElementById('456-frequency');
+  idtoupdate.innerHTML = statusdata.reqfrequency;
+  var idtoupdate = document.getElementById('123-voltage');
+  idtoupdate.innerHTML = statusdata.voltage;
+  var idtoupdate = document.getElementById('123-current');
+  idtoupdate.innerHTML = statusdata.current;
+  var idtoupdate = document.getElementById('123-rpm');
+  idtoupdate.innerHTML = statusdata.rpm;
+  var idtoupdate = document.getElementById('123-tom-rpm');
+  idtoupdate.innerHTML = statusdata.tombola_speed;
+
+}
+
+</script>
+
 </head>
 <body onload="getstatusdata()">
 
@@ -98,37 +130,5 @@
  <div class ="copyright"><strong>Software Version</strong> {{version}}<br>&copy;2024 - <strong>UCL Department of Earth Sciences</strong></div>
 	  </section>
 
-<script>
-
-setInterval(getstatusdata, 5000);
-
-
-async function getstatusdata() {
-  const response = await fetch("/statusdata");
-  const statusdata = await response.json();
-  var idtoupdate = document.getElementById('123-cpu');
-  idtoupdate.innerHTML = statusdata.cpu;
-  var idtoupdate = document.getElementById('456-running');
-  idtoupdate.innerHTML = statusdata.running;
-  var idtoupdate = document.getElementById('123-direction');
-  idtoupdate.innerHTML = statusdata.direction;
-  var idtoupdate = document.getElementById('456-direction');
-  idtoupdate.innerHTML = statusdata.reqdirection;
-  var idtoupdate = document.getElementById('123-frequency');
-  idtoupdate.innerHTML = statusdata.frequency;
-  var idtoupdate = document.getElementById('456-frequency');
-  idtoupdate.innerHTML = statusdata.reqfrequency;
-  var idtoupdate = document.getElementById('123-voltage');
-  idtoupdate.innerHTML = statusdata.voltage;
-  var idtoupdate = document.getElementById('123-current');
-  idtoupdate.innerHTML = statusdata.current;
-  var idtoupdate = document.getElementById('123-rpm');
-  idtoupdate.innerHTML = statusdata.rpm;
-  var idtoupdate = document.getElementById('123-tom-rpm');
-  idtoupdate.innerHTML = statusdata.tombola_speed;
-
-}
-
-</script>
 </body>
 </html>

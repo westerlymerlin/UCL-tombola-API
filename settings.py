@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 
-version = '1.3.0'
+version = '1.3.1'
 
 
 def writesettings():
@@ -17,6 +17,10 @@ def initialise():  # These are the default values written to the settings.json f
                  'port': '/dev/ttyUSB0',
                  'api-key': '57vZPotsJ1VvRlnRKLG4',
                  'cameraID': 0,
+                 'cameraWidth': 320,
+                 'cameraHeight': 240,
+                 'cameraFPS': 5,
+                 'cameraExposure': -0.9,
                  'baud': 9600,
                  'bytesize': 8,
                  'stopbits': 1,
