@@ -14,10 +14,13 @@ class VideoCamera(object):
             self.video.set(cv2.CAP_PROP_FRAME_WIDTH, settings['cameraWidth'])
             self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, settings['cameraHeight'])
             self.video.set(cv2.CAP_PROP_EXPOSURE, settings['cameraExposure'])
+            self.video.set(cv2.CAP_PROP_FRAME_COUNT, settings['cameraFrameCount'])
             logger.info('Video FPS %s' % self.video.get(cv2.CAP_PROP_FPS))
             logger.info('Video Width %s' % self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
             logger.info('Video Height %s' % self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
             logger.info('Video Exposure %s' % self.video.get(cv2.CAP_PROP_EXPOSURE))
+            logger.info('Video Frame Count %s' % self.video.get(cv2.CAP_PROP_FRAME_COUNT))
+
 
 
     def __del__(self):
