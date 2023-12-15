@@ -1,6 +1,7 @@
-minimalmodbus~=2.1.1
-flask~=3.0.0
+minimalmodbus
+flask
 RPi.GPIO
-
-requests~=2.31.0
-pyserial~=3.5
+numpy
+opencv-python-headless
+requests
+pyserial

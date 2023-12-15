@@ -108,7 +108,6 @@ table {
 	margin: 1px 10px;
 }
 .tabledataleft {
-
 	padding-right: 35px;
 	color: #101010;
 	border-collapse: collapse;
@@ -120,7 +119,18 @@ table {
 	padding-left: 5px;
 	margin: 1px 10px;
 }
-
+.tableimage {
+	padding-right: 0px;
+	color: #101010;
+	border-collapse: collapse;
+	border-style: solid;
+	border-width: 2px;
+	border-color: #2D9AB7;
+	vertical-align:top;
+	min-height: 0px;
+	padding-left: 0px;
+	margin: 0px;
+}
 .light {
 	font-weight: bold;
 	color: #717070;
