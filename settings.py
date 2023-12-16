@@ -20,8 +20,7 @@ def initialise():  # These are the default values written to the settings.json f
                  'cameraWidth': 320,
                  'cameraHeight': 240,
                  'cameraFPS': 5,
-                 'cameraExposure': -0.9,
-                 'cameraFrameCount': 10,
+                 'cameraMode': 200,   # 700 for windows
                  'baud': 9600,
                  'bytesize': 8,
                  'stopbits': 1,
