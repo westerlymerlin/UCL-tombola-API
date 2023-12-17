@@ -1,19 +1,16 @@
 import subprocess
-from gevent import monkey
-monkey.patch_all()
-
 from flask import Flask, render_template, jsonify, request, Response
 from settings import settings, version
 from MotorClass import Motor
 from logmanager import logger
 from camera import VideoCamera
-from time import sleep
 
 
 logger.info('Starting Tombola web app version %s' % version)
 app = Flask(__name__)
 tom = Motor()
 video_stream = VideoCamera()
+
 
 @app.route('/', methods=['GET', 'POST'])  # Default website
 def index():
@@ -43,13 +40,12 @@ def statusdata():
 def gen(camera):
     while True:
         frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+        yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n'
 
 
 @app.route('/video_feed')
 def video_feed():
-     return Response(gen(video_stream), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(gen(video_stream), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/api', methods=['POST'])  # API endpoint - requires data to be sent in a json message
