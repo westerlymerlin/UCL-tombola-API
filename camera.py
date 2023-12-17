@@ -2,7 +2,8 @@ import cv2
 from logmanager import logger
 from settings import settings
 
-class VideoCamera(object):  # https://stackoverflow.com/questions/52068277/change-frame-rate-in-opencv-3-4-2
+
+class VideoCamera(object):
     def __init__(self):
         self.video = cv2.VideoCapture(settings['cameraID'])
         if not self.video.isOpened():
@@ -12,10 +13,14 @@ class VideoCamera(object):  # https://stackoverflow.com/questions/52068277/chang
             self.video.set(cv2.CAP_PROP_FPS, settings['cameraFPS'])
             self.video.set(cv2.CAP_PROP_FRAME_WIDTH, settings['cameraWidth'])
             self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, settings['cameraHeight'])
+            self.video.set(cv2.CAP_PROP_BRIGHTNESS, settings['cameraBrightness'])
+            self.video.set(cv2.CAP_PROP_CONTRAST, settings['cameraContrast'])
             logger.info('Video FPS %s' % self.video.get(cv2.CAP_PROP_FPS))
             logger.info('Video Width %s' % self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
             logger.info('Video Height %s' % self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
             logger.info('Video Backend %i' % self.video.get(cv2.CAP_PROP_BACKEND))
+            logger.info('Video Brightness %i' % self.video.get(cv2.CAP_PROP_BRIGHTNESS))
+            logger.info('Video Contrast %i' % self.video.get(cv2.CAP_PROP_CONTRAST))
 
     def __del__(self):
         self.video.release()

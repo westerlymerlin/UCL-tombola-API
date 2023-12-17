@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 
-version = '1.3.3'
+version = '1.3.4'
 
 
 def writesettings():
@@ -19,8 +19,9 @@ def initialise():  # These are the default values written to the settings.json f
                  'cameraID': 0,
                  'cameraWidth': 320,
                  'cameraHeight': 240,
-                 'cameraFPS': 5,
-                 'cameraMode': 200,   # 700 for windows
+                 'cameraFPS': 30,
+                 'cameraBrightness': 10,
+                 'cameraContrast': 10,
                  'baud': 9600,
                  'bytesize': 8,
                  'stopbits': 1,
