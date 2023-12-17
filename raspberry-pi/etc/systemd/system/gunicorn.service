@@ -8,7 +8,7 @@ User=tompi
 Group=www-data
 RuntimeDirectory=gunicorn
 WorkingDirectory=/home/tompi/
-ExecStart=/usr/bin/gunicorn3 --bind=unix:/tmp/gunicorn.sock --workers=1 --access-logfile=/home/tompi/logs/gunicorn-access.log   --error-logfile=/home/tompi/logs/gunicorn-error.log  app:app
+ExecStart=/usr/bin/gunicorn3 --worker-clas gevent --worker-connections 1000 --bind=unix:/tmp/gunicorn.sock --workers=1 --access-logfile=/home/tompi/logs/gunicorn-access.log   --error-logfile=/home/tompi/logs/gunicorn-error.log  app:app
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
 
