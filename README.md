@@ -20,7 +20,7 @@ Full documentation can be found in the file https://github.com/westerlymerlin/UC
 ---
 **Web Application**
 <br>
-Accessing the URL `http://[url to your server]/api` via a web browser will open that status web page. It has buttons to
+Accessing the URL `http://[url to your server]` via a web browser will open that status web page. It has buttons to
 allow starting the Tombola, stopping it and setting an auto-stop time if it is being left unatended.
 
 **Direct API Calls**
@@ -30,9 +30,8 @@ return a json message containing the V20 status values.
 
 **API Messages**
 <br>
-`{"forward": n}`  Start the motor running forward at a frequency of n where n is 0 - 10000<br>
-`{"frequency": 0}`  Stop the motor<br>
-`{"reverse": n}`  Start the motor running in reverse at a frequency of n where n is 0 - 10000<br>
+`{"setrpm": n.n}`  Start the tombola running and hold it at (0.1 - 74.9 rpm)<br>
+`{"setrpm": 0}`  Stop the tombola<br>
 `{"rpm": True}`  Read the tombola RPM<br>
 `{"rpm_data": True}`  Read the tombola timing data from 3 revolutions<br>
 `{"write_register": rr, "word": ww}`  Write the word ww to the register rr<br>
@@ -46,8 +45,8 @@ return a json message containing the V20 status values.
 <br>
 These can be run from a the console (via ssh or direct on the raspberry pi) to upgrade to the latest version of the
 python code:<br>
-`git-pull.sh`   Pull the latest code from the master branch of github to a staging folder `~/github/UCL-tombola`<br>
-`deploy-from-git.sh`  Deploye the code from the staging folder into the home folder and restarts the python web app<br>
+`deploy-from-git.sh`  Check github for a newer version of the code and if there is download, deply and restart the 
+python web app<br>
 <br>
 Less often used comamnds used for troubelshooting:<br>
 `stopservices.sh` Stop the gunicorn and nginx services<br>

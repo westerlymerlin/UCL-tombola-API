@@ -36,19 +36,16 @@ class Motor:
         self.rpm = RPM()
         self.auto_stop_timer()
 
-    def forward(self, speed):
-        self.direction = 0
-        self.frequency = speed
-        self.running = 1
-        try:
-            self.controller_command([self.frequency, self.running, self.direction, 1])
-        except AttributeError:
-            logger.error('MotorClass: forward function error No RS483 Controller')
-        except minimalmodbus.NoResponseError:
-            logger.error('MotorClass: forward function error RS485 timeout')
-        logger.info('Tombola Command: Forward %s Hz' % speed)
-
     def set_speed(self, required_rpm):
+        try:
+            required_rpm = int(float(required_rpm) * 10)/10
+        except ValueError:
+            return
+        if required_rpm < 0.1:
+            self.stop()
+            return
+        elif required_rpm > 74.9:
+            required_rpm = 74.9
         self.running = 1
         self.direction = 0
         self.requested_rpm = required_rpm
@@ -61,10 +58,12 @@ class Motor:
             return
         if abs(rpm - self.requested_rpm) > 1:
             self.frequency = int(10 * self.requested_rpm * self.rpm_hz)
-        elif rpm - self.requested_rpm < 0.1:
-            self.frequency = int(self.frequency + self.rpm_hz)
         elif rpm - self.requested_rpm > 0.1:
+            logger.info('RPM slightly to high, reducing it a bit')
             self.frequency = int(self.frequency - self.rpm_hz)
+        elif rpm - self.requested_rpm < -0.1:
+            logger.info('RPM slightly to low, increasing it a bit')
+            self.frequency = int(self.frequency + self.rpm_hz)
         else:
             speedchanged = 0
         if speedchanged:
@@ -79,18 +78,6 @@ class Motor:
                         % (rpm, self.requested_rpm, self.frequency))
         rpmthread = Timer(10, self.rpm_controller)
         rpmthread.start()
-
-    def reverse(self, speed):
-        self.direction = 1
-        self.frequency = speed
-        self.running = 1
-        try:
-            self.controller_command([self.frequency, self.running, self.direction, 1])
-        except AttributeError:
-            logger.error('MotorClass: reverse function error No RS483 Controller')
-        except minimalmodbus.NoResponseError:
-            logger.error('MotorClass: reverse function error RS485 timeout')
-        logger.info('Tombola Command: Reverse %s Hz' % speed)
 
     def stop(self):
         self.direction = 0
@@ -114,24 +101,23 @@ class Motor:
             actual_data = self.controller.read_registers(self.query_start_register, self.read_length, 3)
             setting_data = self.controller.read_registers(self.command_start_register, 4, 3)
             self.controller.serial.close()
-            return {'running': running(self.running), 'reqdirection': direction(self.direction),
-                    'reqfrequency': setting_data[0] / 100, 'direction': direction(setting_data[2]),
+            return {'running': running(self.running), 'reqfrequency': setting_data[0] / 100,
                     'frequency': actual_data[0] / 100, 'voltage': actual_data[9], 'current': actual_data[2] / 100,
-                    'rpm': actual_data[1], 'tombola_speed': '%.2f' % self.rpm.get_rpm(), 'requested_speed': self.requested_rpm}
+                    'rpm': actual_data[1], 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
+                    'requested_speed': self.requested_rpm}
         except AttributeError:   # RS485 not plugged in
             logger.error('Tombola Query Error: RS485 controller is not working or not plugged in')
-            return {'running': running(self.running), 'reqdirection': direction(self.direction),
-                    'reqfrequency': self.frequency / 100, 'direction': 'No RS485 Controller',
+            return {'running': running(self.running), 'reqfrequency': self.frequency / 100,
                     'frequency': 'No RS485 Controller', 'voltage': 'No RS485 Controller',
                     'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller',
                     'tombola_speed': '%.2f' % self.rpm.get_rpm(), 'requested_speed': self.requested_rpm}
         except minimalmodbus.NoResponseError:
             logger.error('Tombola Query Error: No response from the V20 controller, '
                          'check it is powered on and connected')
-            return {'running': running(self.running), 'reqdirection': direction(self.direction),
-                    'reqfrequency': self.frequency / 100, 'direction': 'RS485 Timeout',
+            return {'running': running(self.running), 'reqfrequency': self.frequency / 100,
                     'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout', 'current': 'RS485 Timeout',
-                    'rpm': 'RS485 Timeout', 'tombola_speed': '%.2f' % self.rpm.get_rpm(), 'requested_speed': self.requested_rpm}
+                    'rpm': 'RS485 Timeout', 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
+                    'requested_speed': self.requested_rpm}
 
     def print_controlword(self):
         data = self.controller.read_register(99, 0, 3)
@@ -187,12 +173,11 @@ class Motor:
         if 'stop' in message.keys():
             logger.info('Stop request recieved web application')
             self.stop()
+        elif 'websetrpm' in message.keys():
+            logger.info('RPM set by web application')
+            self.set_speed(message['websetrpm'])
         elif 'setrpm' in message.keys():
-            self.set_speed(message['setrpm'])
-        elif 'forward' in message.keys():
-            self.forward(message['forward'])
-        elif 'reverse' in message.keys():
-            self.reverse(message['reverse'])
+            self.set_speed(message['websetrpm'])
         elif 'reset' in message.keys():
             self.write_register(self.stw_control_register, settings['STW_forward'])
         elif 'write_register' in message.keys():
@@ -203,22 +188,12 @@ class Motor:
             return self.rpm.get_rpm_data()
         elif 'rpm' in message.keys():
             return {'rpm': self.rpm.get_rpm()}
-        elif 'setfreq' in message.keys():
-            if int(message['setfreq']) > 0:
-                self.forward(int(message['setfreq']))
         elif 'stoptime' in message.keys():
             if 'autostop' in message.keys():
                 self.set_stop_time(True, message['stoptime'])
             else:
                 self.set_stop_time(False, message['stoptime'])
             logger.info('Stop time updated via web application')
-        elif 'frequency' in message.keys():
-            logger.info('Frequency updated via web application')
-            speed = int(message['frequency'])
-            if speed == 0:
-                self.stop()
-            else:
-                self.forward(message['frequency'])
         else:
             logger.info('message recieved but not processed  = %s' % message)  # used for debugging HTML Forms
         return self.controller_query()
