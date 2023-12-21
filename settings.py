@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 
-version = '1.3.4'
+version = '1.4.0'
 
 
 def writesettings():
@@ -13,40 +13,41 @@ def writesettings():
 
 def initialise():  # These are the default values written to the settings.json file the first time the app is run
     isettings = {'LastSave': '01/01/2000 00:00:01',
-                 'database_path': './database/',
-                 'port': '/dev/ttyUSB0',
+                 'STW_forward': 1142,
+                 'STW_register': 40100,
+                 'STW_stop': 0,
                  'api-key': '57vZPotsJ1VvRlnRKLG4',
-                 'cameraID': 0,
-                 'cameraWidth': 320,
-                 'cameraHeight': 240,
-                 'cameraFPS': 30,
-                 'cameraBrightness': 10,
-                 'cameraContrast': 10,
+                 'autoshutdown': True,
                  'baud': 9600,
                  'bytesize': 8,
-                 'stopbits': 1,
-                 'timeout': 1,
-                 'station': 1,
+                 'cameraBrightness': 10,
+                 'cameraContrast': 10,
+                 'cameraFPS': 30,
+                 'cameraHeight': 240,
+                 'cameraID': 0,
+                 'cameraWidth': 320,
+                 'clear_buffers_after_call': True,
                  'clear_buffers_before_call': True,
-                 'clear_buffers_after_call': True, 
-                 'register_offset': 40001,
                  'control_offset': 40003,
-                 'STW_register': 40100,
-                 'STW_forward': 1142,
-                 'STW_stop': 0,
-                 'reading_offset': 40024,
-                 'read_length': 16,
-                 'logfilepath': './logs/tombola.log',
-                 'logappname': 'Tombola-Py',
-                 'gunicornpath': './logs/',
                  'cputemp': '/sys/class/thermal/thermal_zone0/temp',
-                 'syslog': '/var/log/syslog',
-                 'shutdowntime': '23:59:59',
-                 'autoshutdown': True,
+                 'database_path': './database/',
+                 'gunicornpath': './logs/',
+                 'logappname': 'Tombola-Py',
+                 'logfilepath': './logs/tombola.log',
+                 'port': '/dev/ttyUSB0',
+                 'read_length': 16,
+                 'reading_offset': 40024,
+                 'register_offset': 40001,
+                 'rpm_active_LED': 17,
+                 'rpm_frequency': 11.96,
                  'rpm_magnets': 48,
                  'rpm_sensor_GPIO': 27,
                  'rpm_timeout_seconds': 2,
-                 'rpm_active_LED': 17}
+                 'shutdowntime': '08:00:00',
+                 'station': 1,
+                 'stopbits': 1,
+                 'syslog': '/var/log/syslog',
+                 'timeout': 1}
     return isettings
 
 

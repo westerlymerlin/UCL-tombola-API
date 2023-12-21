@@ -14,8 +14,7 @@ class Motor:
         self.stw_control_register = settings['STW_register'] - self.register_offset
         self.query_start_register = settings['reading_offset'] - self.register_offset
         try:
-            self.controller = minimalmodbus.Instrument(settings['port'], settings['station'],
-                                                       minimalmodbus.MODE_RTU)
+            self.controller = minimalmodbus.Instrument(settings['port'], settings['station'], minimalmodbus.MODE_RTU)
             self.controller.serial.parity = minimalmodbus.serial.PARITY_EVEN
             self.controller.serial.baudrate = settings['baud']
             self.controller.serial.bytesize = settings['bytesize']
@@ -32,6 +31,8 @@ class Motor:
         self.running = 0  # O = disabled 1 = enabled
         self.autoshutdown = settings['autoshutdown']
         self.autoshutdowntime = settings['shutdowntime']
+        self.rpm_hz = settings['rpm_frequency']
+        self.requested_rpm = 0
         self.rpm = RPM()
         self.auto_stop_timer()
 
@@ -46,6 +47,38 @@ class Motor:
         except minimalmodbus.NoResponseError:
             logger.error('MotorClass: forward function error RS485 timeout')
         logger.info('Tombola Command: Forward %s Hz' % speed)
+
+    def set_speed(self, required_rpm):
+        self.running = 1
+        self.direction = 0
+        self.requested_rpm = required_rpm
+        self.set_rpm()
+
+    def set_rpm(self):
+        rpm = self.rpm.get_rpm()
+        speedchanged = 1
+        if not self.running:
+            return
+        if abs(rpm - self.requested_rpm) > 1:
+            self.frequency = int(10 * self.requested_rpm * self.rpm_hz)
+        elif rpm - self.requested_rpm > 0.1:
+            self.frequency = int(self.frequency + self.rpm_hz)
+        elif rpm - self.requested_rpm < 0.1:
+            self.frequency = int(self.frequency - self.rpm_hz)
+        else:
+            speedchanged = 0
+        if speedchanged:
+            # print('Current f %.2f Desired %.2f' % (rpm, self.requested_rpm))
+            try:
+                self.controller_command([self.frequency, self.running, self.direction, 1])
+            except AttributeError:
+                logger.error('MotorClass: forward function error No RS483 Controller')
+            except minimalmodbus.NoResponseError:
+                logger.error('MotorClass: forward function error RS485 timeout')
+            logger.info('Motorclass set RPM: Current RPM %.2f Desired %.2f setting to frequency %s'
+                        % (rpm, self.requested_rpm, self.frequency))
+        rpmthread = Timer(5, self.set_rpm)
+        rpmthread.start()
 
     def reverse(self, speed):
         self.direction = 1
@@ -62,6 +95,7 @@ class Motor:
     def stop(self):
         self.direction = 0
         self.frequency = 0
+        self.requested_rpm = 0
         self.running = 0
         try:
             self.controller_command([self.frequency, self.running, self.direction, 0])
@@ -153,6 +187,8 @@ class Motor:
         if 'stop' in message.keys():
             logger.info('Stop request recieved web application')
             self.stop()
+        elif 'setrpm' in message.keys():
+            self.set_speed(message['setrpm'])
         elif 'forward' in message.keys():
             self.forward(message['forward'])
         elif 'reverse' in message.keys():
