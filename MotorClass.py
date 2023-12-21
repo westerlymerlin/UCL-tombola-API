@@ -57,6 +57,7 @@ class Motor:
         if not self.running:
             return
         if abs(rpm - self.requested_rpm) > 1:
+            logger.info('RPM > 1 RPM so resetiing')
             self.frequency = int(10 * self.requested_rpm * self.rpm_hz)
         elif rpm - self.requested_rpm > 0.1:
             logger.info('RPM slightly to high, reducing it a bit')
@@ -67,7 +68,8 @@ class Motor:
         else:
             speedchanged = 0
         if speedchanged:
-            # print('Current f %.2f Desired %.2f' % (rpm, self.requested_rpm))
+            rpmthread = Timer(10, self.rpm_controller)
+            rpmthread.start()
             try:
                 self.controller_command([self.frequency, self.running, self.direction, 1])
             except AttributeError:
@@ -76,8 +78,7 @@ class Motor:
                 logger.error('MotorClass: rpm controller function error RS485 timeout')
             logger.info('Motorclass rpm controller: Current RPM %.2f Desired %.2f setting to frequency %s'
                         % (rpm, self.requested_rpm, self.frequency))
-        rpmthread = Timer(10, self.rpm_controller)
-        rpmthread.start()
+
 
     def stop(self):
         self.direction = 0
