@@ -52,18 +52,18 @@ class Motor:
         self.running = 1
         self.direction = 0
         self.requested_rpm = required_rpm
-        self.set_rpm()
+        self.rpm_controller()
 
-    def set_rpm(self):
+    def rpm_controller(self):
         rpm = self.rpm.get_rpm()
         speedchanged = 1
         if not self.running:
             return
         if abs(rpm - self.requested_rpm) > 1:
             self.frequency = int(10 * self.requested_rpm * self.rpm_hz)
-        elif rpm - self.requested_rpm > 0.1:
-            self.frequency = int(self.frequency + self.rpm_hz)
         elif rpm - self.requested_rpm < 0.1:
+            self.frequency = int(self.frequency + self.rpm_hz)
+        elif rpm - self.requested_rpm > 0.1:
             self.frequency = int(self.frequency - self.rpm_hz)
         else:
             speedchanged = 0
@@ -72,12 +72,12 @@ class Motor:
             try:
                 self.controller_command([self.frequency, self.running, self.direction, 1])
             except AttributeError:
-                logger.error('MotorClass: forward function error No RS483 Controller')
+                logger.error('MotorClass: rpm controller function error No RS483 Controller')
             except minimalmodbus.NoResponseError:
-                logger.error('MotorClass: forward function error RS485 timeout')
-            logger.info('Motorclass set RPM: Current RPM %.2f Desired %.2f setting to frequency %s'
+                logger.error('MotorClass: rpm controller function error RS485 timeout')
+            logger.info('Motorclass rpm controller: Current RPM %.2f Desired %.2f setting to frequency %s'
                         % (rpm, self.requested_rpm, self.frequency))
-        rpmthread = Timer(5, self.set_rpm)
+        rpmthread = Timer(10, self.rpm_controller)
         rpmthread.start()
 
     def reverse(self, speed):
@@ -117,21 +117,21 @@ class Motor:
             return {'running': running(self.running), 'reqdirection': direction(self.direction),
                     'reqfrequency': setting_data[0] / 100, 'direction': direction(setting_data[2]),
                     'frequency': actual_data[0] / 100, 'voltage': actual_data[9], 'current': actual_data[2] / 100,
-                    'rpm': actual_data[1], 'tombola_speed': '%.2f' % self.rpm.get_rpm()}
+                    'rpm': actual_data[1], 'tombola_speed': '%.2f' % self.rpm.get_rpm(), 'requested_speed': self.requested_rpm}
         except AttributeError:   # RS485 not plugged in
             logger.error('Tombola Query Error: RS485 controller is not working or not plugged in')
             return {'running': running(self.running), 'reqdirection': direction(self.direction),
                     'reqfrequency': self.frequency / 100, 'direction': 'No RS485 Controller',
                     'frequency': 'No RS485 Controller', 'voltage': 'No RS485 Controller',
                     'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller',
-                    'tombola_speed': '%.2f' % self.rpm.get_rpm()}
+                    'tombola_speed': '%.2f' % self.rpm.get_rpm(), 'requested_speed': self.requested_rpm}
         except minimalmodbus.NoResponseError:
             logger.error('Tombola Query Error: No response from the V20 controller, '
                          'check it is powered on and connected')
             return {'running': running(self.running), 'reqdirection': direction(self.direction),
                     'reqfrequency': self.frequency / 100, 'direction': 'RS485 Timeout',
                     'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout', 'current': 'RS485 Timeout',
-                    'rpm': 'RS485 Timeout', 'tombola_speed': '%.2f' % self.rpm.get_rpm()}
+                    'rpm': 'RS485 Timeout', 'tombola_speed': '%.2f' % self.rpm.get_rpm(), 'requested_speed': self.requested_rpm}
 
     def print_controlword(self):
         data = self.controller.read_register(99, 0, 3)
