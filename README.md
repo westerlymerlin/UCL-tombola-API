@@ -30,10 +30,10 @@ return a json message containing the V20 status values.
 
 **API Messages**
 <br>
-`{"setrpm": n.n}`  Start the tombola running and hold it at (0.1 - 74.9 rpm)<br>
+`{"setrpm": n.n}`  Start the tombola running and hold it at n.n rpm (0.1 - 74.9 rpm)<br>
 `{"setrpm": 0}`  Stop the tombola<br>
 `{"rpm": True}`  Read the tombola RPM<br>
-`{"rpm_data": True}`  Read the tombola timing data from 3 revolutions<br>
+`{"rpm_data": True}`  Read the tombola abs sensor timing data from 3 revolutions<br>
 `{"write_register": rr, "word": ww}`  Write the word ww to the register rr<br>
 `{"read_register": rr}`  Read the value from the register rr<br>
 `{"stoptime": "HH:MM:SS", "autostop": true}` set the controller to auto shut off at HH:MM:SS<br>

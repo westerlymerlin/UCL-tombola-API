@@ -118,6 +118,11 @@ class Motor:
                     'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout', 'current': 'RS485 Timeout',
                     'rpm': 'RS485 Timeout', 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
                     'requested_speed': self.requested_rpm}
+        except:
+            logger.error('Tombola Query Error: unhandled exeption')
+            return {'running': running(self.running), 'reqfrequency': self.frequency / 100, 'frequency': '-',
+                    'voltage': '-', 'current': '-', 'rpm': '-', 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
+                    'requested_speed': self.requested_rpm}
 
     def print_controlword(self):
         data = self.controller.read_register(99, 0, 3)
