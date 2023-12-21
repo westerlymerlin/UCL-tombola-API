@@ -67,6 +67,7 @@ class Motor:
             self.frequency = int(self.frequency + self.rpm_hz)
         else:
             speedchanged = 0
+            logger.info('rpm_hz = %s' % (self.frequency / self.rpm.get_rpm()) / 100)
         if speedchanged:
             rpmthread = Timer(10, self.rpm_controller)
             rpmthread.start()
@@ -78,7 +79,6 @@ class Motor:
                 logger.error('MotorClass: rpm controller function error RS485 timeout')
             logger.info('Motorclass rpm controller: Current RPM %.2f Desired %.2f setting to frequency %s'
                         % (rpm, self.requested_rpm, self.frequency))
-
 
     def stop(self):
         self.direction = 0

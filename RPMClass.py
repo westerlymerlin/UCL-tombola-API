@@ -42,7 +42,7 @@ class RPM:
     def get_rpm_data(self):
         returntime = []
         for item in self.timequeue:
-            returntime.append(datetime.datetime.strftime(item, '%H:%M:%S.%f'))
+            returntime.append((item - self.timequeue[0]).total_seconds())
         return returntime
 
 
