@@ -23,7 +23,7 @@ def index():
                    '<p>The method is not allowed for the requested URL.</p>', 405
         logger.info('Index page: Web Post recieved')
         tom.parse_control_message(request.form)
-    return render_template('index.html', version=version, frequency=tom.frequency, stoptimer=tom.get_stop_time())
+    return render_template('index.html', version=version, rpm=tom.requested_rpm, stoptimer=tom.get_stop_time())
 
 
 @app.route('/statusdata', methods=['GET'])  # Status data read by javascript on default website
