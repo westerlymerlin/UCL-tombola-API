@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 
-version = '1.4.4'
+version = '1.4.5'
 
 
 def writesettings():
@@ -14,7 +14,7 @@ def writesettings():
 def initialise():  # These are the default values written to the settings.json file the first time the app is run
     isettings = {'LastSave': '01/01/2000 00:00:01',
                  'STW_forward': 1142,
-                 'STW_register': 40100,
+                 'STW_register': 99,
                  'STW_stop': 0,
                  'api-key': '57vZPotsJ1VvRlnRKLG4',
                  'autoshutdown': True,
@@ -28,7 +28,7 @@ def initialise():  # These are the default values written to the settings.json f
                  'cameraWidth': 320,
                  'clear_buffers_after_call': True,
                  'clear_buffers_before_call': True,
-                 'control_offset': 40003,
+                 'control_start_register': 2,
                  'cputemp': '/sys/class/thermal/thermal_zone0/temp',
                  'database_path': './database/',
                  'gunicornpath': './logs/',
@@ -36,8 +36,7 @@ def initialise():  # These are the default values written to the settings.json f
                  'logfilepath': './logs/tombola.log',
                  'port': '/dev/ttyUSB0',
                  'read_length': 16,
-                 'reading_offset': 40024,
-                 'register_offset': 40001,
+                 'reading_start_register': 23,
                  'rpm_active_LED': 17,
                  'rpm_frequency': 11.96,
                  'rpm_magnets': 48,

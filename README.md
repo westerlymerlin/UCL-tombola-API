@@ -21,7 +21,7 @@ Full documentation can be found in the file https://github.com/westerlymerlin/UC
 **Web Application**
 <br>
 Accessing the URL `http://[url to your server]` via a web browser will open that status web page. It has buttons to
-allow starting the Tombola, stopping it and setting an auto-stop time if it is being left unatended.
+allow starting the Tombola at a desired RPM, stopping it and setting an auto-stop time if it is being left unatended.
 
 **Direct API Calls**
 <br>

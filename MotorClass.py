@@ -9,10 +9,9 @@ from logmanager import logger
 
 class Motor:
     def __init__(self):
-        self.register_offset = settings['register_offset']
-        self.command_start_register = settings['control_offset'] - self.register_offset
-        self.stw_control_register = settings['STW_register'] - self.register_offset
-        self.query_start_register = settings['reading_offset'] - self.register_offset
+        self.command_start_register = settings['control_start_register']
+        self.stw_control_register = settings['STW_register']
+        self.query_start_register = settings['reading_start_register']
         try:
             self.controller = minimalmodbus.Instrument(settings['port'], settings['station'], minimalmodbus.MODE_RTU)
             self.controller.serial.parity = minimalmodbus.serial.PARITY_EVEN
@@ -56,21 +55,24 @@ class Motor:
         speedchanged = 1
         if not self.running:
             return
-        if abs(rpm - self.requested_rpm) > 1:
+        speed_diff = rpm - self.requested_rpm  # Difference between actual and requested rpm
+        if abs(speed_diff) > 1:
             logger.info('RPM > 1 RPM so resetiing')
             self.frequency = int(10 * self.requested_rpm * self.rpm_hz)
-        elif rpm - self.requested_rpm > 0.1:
+        elif speed_diff > 0.1:
             logger.info('RPM slightly to high, reducing it a bit')
             self.frequency = int(self.frequency - self.rpm_hz)
-        elif rpm - self.requested_rpm < -0.1:
+        elif speed_diff < -0.1:
             logger.info('RPM slightly to low, increasing it a bit')
             self.frequency = int(self.frequency + self.rpm_hz)
         else:
             speedchanged = 0
-            logger.info('rpm_hz = %s' % (self.frequency / self.rpm.get_rpm()) / 100)
+            rpm_hz = (self.frequency / self.rpm.get_rpm()) / 100  # calculate the steady rpm-hz ratio
+            if abs(rpm_hz - self.rpm_hz) > 5:
+                logger.info('rpm_hz = %s' % rpm_hz)
+        rpmthread = Timer(10, self.rpm_controller)
+        rpmthread.start()
         if speedchanged:
-            rpmthread = Timer(10, self.rpm_controller)
-            rpmthread.start()
             try:
                 self.controller_command([self.frequency, self.running, self.direction, 1])
             except AttributeError:
@@ -187,9 +189,9 @@ class Motor:
         elif 'reset' in message.keys():
             self.write_register(self.stw_control_register, settings['STW_forward'])
         elif 'write_register' in message.keys():
-            self.write_register(message['write_register'] - self.register_offset, message['word'])
+            self.write_register(message['write_register'], message['word'])
         elif 'read_register' in message.keys():
-            return self.read_register(message['read_register'] - self.register_offset)
+            return self.read_register(message['read_register'])
         elif 'rpm_data' in message.keys():
             return self.rpm.get_rpm_data()
         elif 'rpm' in message.keys():
