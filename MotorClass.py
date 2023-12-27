@@ -189,7 +189,7 @@ class Motor:
             self.set_speed(message['websetrpm'])
         elif 'setrpm' in message.keys():
             logger.info('MotorClass: RPM set by API')
-            self.set_speed(message['websetrpm'])
+            self.set_speed(message['setrpm'])
         elif 'reset' in message.keys():
             logger.info('MotorClass: Controller reset requested by web application')
             self.write_register(self.stw_control_register, settings['STW_forward'])
