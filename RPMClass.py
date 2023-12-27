@@ -41,8 +41,8 @@ class RPM:
 
     def get_rpm_data(self):
         returntime = []
-        for item in self.timequeue:
-            returntime.append((item - self.timequeue[0]).total_seconds())
+        for i  in range(self.magnets + 1):
+            returntime.append((self.timequeue[i] - self.timequeue[0]).total_seconds())
         return returntime
 
 

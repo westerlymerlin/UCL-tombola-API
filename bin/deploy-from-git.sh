@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# CICD Script to check if there is a new push to github and auto deploy it
+# CICD Script to check if there is a new version in github and auto-deploy it
 
 echo -e "\033[0;33m **** fetching the master branch from github **** \033[0m"
 cd /home/tompi/github/UCL-tombola/
@@ -12,9 +12,9 @@ REMOTE=$(git rev-parse "$UPSTREAM")
 BASE=$(git merge-base @ "$UPSTREAM")
 
 if [ $LOCAL = $REMOTE ]; then
-    echo -e "\033[0;32m **** app is up-to-date so nothing to do - exiting **** \033[0m"
+    echo -e "\033[0;32m ******** app is up-to-date so nothing to do - exiting ******** \033[0m"
 elif [ $LOCAL = $BASE ]; then
-    echo -e "\033[0;31m newer version in github so I will update the app \033[0m"
+    echo -e "\033[0;31m **** newer version in github so I will update the app **** \033[0m"
     git pull origin master
     cd /home/tompi
     echo -e "\033[0;33m **** stopping gunicorn and python app **** \033[0m"
@@ -23,7 +23,7 @@ elif [ $LOCAL = $BASE ]; then
     echo -e "\033[0;33m **** copying files from cloned github repo **** \033[0m"
     cp -r /home/tompi/github/UCL-tombola/*  /home/tompi/
     echo -e "\033[0;33m **** all files copied **** \033[0m"
-    echo "**** setting flags on bin folder **** \033[0m"
+    echo -e "\033[0;33m **** setting flags on bin folder **** \033[0m"
     chmod 755 /home/tompi/bin/*.sh
     echo -e "\033[0;33m **** restarting gunicorn and python **** \033[0m"
     sudo systemctl start gunicorn.service
