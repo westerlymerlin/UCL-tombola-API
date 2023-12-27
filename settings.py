@@ -38,7 +38,7 @@ def initialise():  # These are the default values written to the settings.json f
                  'read_length': 16,
                  'reading_start_register': 23,
                  'rpm_active_LED': 17,
-                 'rpm_frequency': 11.96,
+                 'rpm_frequency': 11.91,
                  'rpm_magnets': 48,
                  'rpm_sensor_GPIO': 27,
                  'rpm_timeout_seconds': 2,

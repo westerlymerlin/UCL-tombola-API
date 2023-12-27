@@ -67,7 +67,7 @@ class Motor:
             self.frequency = int(self.frequency + self.rpm_hz)
         else:
             speedchanged = 0
-            rpm_hz = (self.frequency / self.rpm.get_rpm()) / 100  # calculate the steady rpm-hz ratio
+            rpm_hz = (self.frequency / self.rpm.get_rpm()) / 10  # calculate the steady rpm-hz ratio
             if abs(rpm_hz - self.rpm_hz) > 5:
                 logger.info('rpm_hz = %s' % rpm_hz)
         rpmthread = Timer(10, self.rpm_controller)
