@@ -51,10 +51,8 @@ def video_feed():
 @app.route('/api', methods=['POST'])  # API endpoint - requires data to be sent in a json message
 def api():
     try:
-        #  print(request.headers)
         if 'Api-Key' in request.headers.keys():  # check api key exists
             if request.headers['api-key'] == settings['api-key']:  # check for correct API key
-                print('API: valid request: %s' % request.json)
                 status = tom.parse_control_message(request.json)
                 return jsonify(status), 201
             else:

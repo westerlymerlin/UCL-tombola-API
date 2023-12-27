@@ -21,7 +21,7 @@ class Motor:
             self.controller.serial.timeout = settings['timeout']
             self.controller.clear_buffers_before_each_transaction = settings['clear_buffers_before_call']
             self.controller.close_port_after_each_call = settings['clear_buffers_after_call']
-            logger.info('MotorClass RS485 controller setup with modbus')
+            logger.info('MotorClass: RS485 controller setup with modbus')
         except serial.serialutil.SerialException:
             logger.error('MotorClass: init Error - no controller connected, please check RS485 port address is correct')
         self.read_length = settings['read_length']
@@ -49,37 +49,39 @@ class Motor:
         self.direction = 0
         self.requested_rpm = required_rpm
         self.rpm_controller()
+        logger.info('MotorClass: Set speed: %s' % required_rpm)
 
     def rpm_controller(self):
         rpm = self.rpm.get_rpm()
         speedchanged = 1
-        if not self.running:
+        if self.running:  # run this check in 10s if the drum is running
+            rpmthread = Timer(10, self.rpm_controller)
+            rpmthread.start()
+        else:
             return
         speed_diff = rpm - self.requested_rpm  # Difference between actual and requested rpm
         if abs(speed_diff) > 1:
-            logger.info('RPM > 1 RPM so resetiing')
+            logger.info('MotorClass: RPM diff > 1 so reseting')
             self.frequency = int(10 * self.requested_rpm * self.rpm_hz)
         elif speed_diff > 0.1:
-            logger.info('RPM slightly to high, reducing it a bit')
+            logger.info('MotorClass: RPM slightly to high, reducing it a bit')
             self.frequency = int(self.frequency - self.rpm_hz)
         elif speed_diff < -0.1:
-            logger.info('RPM slightly to low, increasing it a bit')
+            logger.info('MotorClass: RPM slightly to low, increasing it a bit')
             self.frequency = int(self.frequency + self.rpm_hz)
         else:
             speedchanged = 0
             rpm_hz = (self.frequency / self.rpm.get_rpm()) / 10  # calculate the steady rpm-hz ratio
             if abs(rpm_hz - self.rpm_hz) > 5:
-                logger.info('rpm_hz = %s' % rpm_hz)
-        rpmthread = Timer(10, self.rpm_controller)
-        rpmthread.start()
+                logger.info('MotorClass: rpm_hz value should be = %s' % rpm_hz)
         if speedchanged:
             try:
                 self.controller_command([self.frequency, self.running, self.direction, 1])
             except AttributeError:
-                logger.error('MotorClass: rpm controller function error No RS483 Controller')
+                logger.error('MotorClass: Rpm controller function error No RS483 Controller')
             except minimalmodbus.NoResponseError:
-                logger.error('MotorClass: rpm controller function error RS485 timeout')
-            logger.info('Motorclass rpm controller: Current RPM %.2f Desired %.2f setting to frequency %s'
+                logger.error('MotorClass: Rpm controller function error RS485 timeout')
+            logger.info('Motorclass: RPM Controller: Current RPM %.2f Desired %.2f setting to frequency %s'
                         % (rpm, self.requested_rpm, self.frequency))
 
     def stop(self):
@@ -90,10 +92,10 @@ class Motor:
         try:
             self.controller_command([self.frequency, self.running, self.direction, 0])
         except AttributeError:
-            logger.error('MotorClass: stop function error No RS483 Controller')
+            logger.error('MotorClass: Stop function error No RS483 Controller')
         except minimalmodbus.NoResponseError:
-            logger.error('MotorClass: stop function error RS485 timeout')
-        logger.info('Tombola Command: STOP')
+            logger.error('MotorClass: Stop function error RS485 timeout')
+        logger.info('MotorClass: STOP requested')
 
     def controller_command(self, message):
         self.controller.write_registers(self.command_start_register, message)
@@ -109,20 +111,20 @@ class Motor:
                     'rpm': actual_data[1], 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
                     'requested_speed': self.requested_rpm}
         except AttributeError:   # RS485 not plugged in
-            logger.error('Tombola Query Error: RS485 controller is not working or not plugged in')
+            logger.error('MotorClass: Controller Query Error: RS485 controller is not working or not plugged in')
             return {'running': running(self.running), 'reqfrequency': self.frequency / 100,
                     'frequency': 'No RS485 Controller', 'voltage': 'No RS485 Controller',
                     'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller',
                     'tombola_speed': '%.2f' % self.rpm.get_rpm(), 'requested_speed': self.requested_rpm}
         except minimalmodbus.NoResponseError:
-            logger.error('Tombola Query Error: No response from the V20 controller, '
+            logger.error('MotorClass: Controller Query Error: No response from the V20 controller, '
                          'check it is powered on and connected')
             return {'running': running(self.running), 'reqfrequency': self.frequency / 100,
                     'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout', 'current': 'RS485 Timeout',
                     'rpm': 'RS485 Timeout', 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
                     'requested_speed': self.requested_rpm}
         except:
-            logger.error('Tombola Query Error: unhandled exeption')
+            logger.error('MotorClass: Controller Query Error: unhandled exeption', exc_info=BaseException)
             return {'running': running(self.running), 'reqfrequency': self.frequency / 100, 'frequency': '-',
                     'voltage': '-', 'current': '-', 'rpm': '-', 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
                     'requested_speed': self.requested_rpm}
@@ -136,7 +138,7 @@ class Motor:
         try:
             data = self.controller.read_register(reg, 0, 3)
             self.controller.serial.close()
-            logger.info('Motor Class read registry: Registry %s. Word %s' % (reg, data))
+            logger.info('MotorClass: read registry: Registry %s. Word %s' % (reg, data))
             return {'register': reg, 'word': data}
         except AttributeError:
             logger.error('MotorClass: read_register function error No RS483 Controller')
@@ -149,7 +151,7 @@ class Motor:
         try:
             self.controller.write_register(reg, controlword)
             self.controller.serial.close()
-            logger.info('Motor Class write registry: Registry %s. Word %s' % (reg, controlword))
+            logger.info('MotorClass: write registry: Registry %s. Word %s' % (reg, controlword))
         except AttributeError:
             logger.error('MotorClass: write_register function error No RS483 Controller')
         except minimalmodbus.NoResponseError:
@@ -161,7 +163,7 @@ class Motor:
             settings['autoshutdown'] = autostop
             self.autoshutdowntime = stoptime
             settings['shutdowntime'] = stoptime
-            logger.info('Motor Class: Write settings')
+            logger.info('MotorClass: Write settings.json')
             writesettings()
 
     def get_stop_time(self):
@@ -175,26 +177,33 @@ class Motor:
                                          self.autoshutdowntime, '%d/%m/%Y %H:%M:%S')
             # print(stoptime)
             if stoptime < datetime.now():
+                logger.info('MotorClass: Auto stop time reched - stopping')
                 self.stop()
 
     def parse_control_message(self, message):
         if 'stop' in message.keys():
-            logger.info('Stop request recieved web application')
+            logger.info('MotorClass: Stop request recieved from web application')
             self.stop()
         elif 'websetrpm' in message.keys():
-            logger.info('RPM set by web application')
+            logger.info('MotorClass: RPM set by web application')
             self.set_speed(message['websetrpm'])
         elif 'setrpm' in message.keys():
+            logger.info('MotorClass: RPM set by API')
             self.set_speed(message['websetrpm'])
         elif 'reset' in message.keys():
+            logger.info('MotorClass: Controller reset requested by web application')
             self.write_register(self.stw_control_register, settings['STW_forward'])
         elif 'write_register' in message.keys():
+            logger.info('MotorClass: Write Register recieved via API')
             self.write_register(message['write_register'], message['word'])
         elif 'read_register' in message.keys():
+            logger.info('MotorClass: Read Register recieved via API')
             return self.read_register(message['read_register'])
         elif 'rpm_data' in message.keys():
+            logger.info('MotorClass: RPM timing data request via API')
             return self.rpm.get_rpm_data()
         elif 'rpm' in message.keys():
+            logger.info('MotorClass: RPM speed request via API')
             return {'rpm': self.rpm.get_rpm()}
         elif 'stoptime' in message.keys():
             if 'autostop' in message.keys():
@@ -203,7 +212,7 @@ class Motor:
                 self.set_stop_time(False, message['stoptime'])
             logger.info('Stop time updated via web application')
         else:
-            logger.info('message recieved but not processed  = %s' % message)  # used for debugging HTML Forms
+            logger.info('MotorClass: API message recieved but not processed  = %s' % message)  # used for debugging
         return self.controller_query()
 
 
