@@ -25,10 +25,8 @@
 
         <p class="tabledataleft">
         {% for row in rows %}
-            {{row}}<br>
-
-         {% endfor %}
-
+            <slot {% if 'ERROR' in row %} class="logerror" {% elif 'WARN' in row %} class="logwarning" {% else %} class="loginfo" {% endif %}>{{row}}</slot><br>
+        {% endfor %}
         &nbsp</p>
 	</section>
   <section class="banner">

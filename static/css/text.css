@@ -131,6 +131,32 @@ table {
 	padding-left: 0px;
 	margin: 0px;
 }
+.logerror {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	font-weight: bolder;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	color: #c70000;
+}
+.logwarning {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	font-weight: bolder;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	color: #f69003;
+}
+.loginfo {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	color: #75af02;
+}
 .light {
 	font-weight: bold;
 	color: #717070;

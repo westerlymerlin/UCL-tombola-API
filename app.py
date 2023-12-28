@@ -98,9 +98,10 @@ def showgelogs():
 
 @app.route('/syslog')  # display the raspberry pi system log
 def showslogs():
-    log = subprocess.Popen('journalctl -n 200 -r', shell=True,
+    log = subprocess.Popen('journalctl -n 200', shell=True,
                            stdout=subprocess.PIPE).stdout.read().decode(encoding='utf-8')
     logs = log.split('\n')
+    logs.reverse()
     return render_template('logs.html', rows=logs, log='system log', version=version)
 
 
