@@ -1,29 +1,37 @@
+"""
+motor_class module, provides the control to the v20 controller and reads from the rpm module
+"""
+
+from threading import Timer
+from datetime import datetime
 import minimalmodbus
 import serial.serialutil
-from datetime import datetime
-from threading import Timer
 from settings import settings, writesettings
-from RPMClass import RPM
+from rpm_class import RPM
 from logmanager import logger
 
 
 class Motor:
+    """Motor controller class, manages the comms to teh v20 controller and reads rpm"""
     def __init__(self):
         self.command_start_register = settings['control_start_register']
         self.stw_control_register = settings['STW_register']
         self.query_start_register = settings['reading_start_register']
         try:
-            self.controller = minimalmodbus.Instrument(settings['port'], settings['station'], minimalmodbus.MODE_RTU)
+            self.controller = minimalmodbus.Instrument(settings['port'], settings['station'],
+                                                       minimalmodbus.MODE_RTU)
             self.controller.serial.parity = minimalmodbus.serial.PARITY_EVEN
             self.controller.serial.baudrate = settings['baud']
             self.controller.serial.bytesize = settings['bytesize']
             self.controller.serial.stopbits = settings['stopbits']
             self.controller.serial.timeout = settings['timeout']
-            self.controller.clear_buffers_before_each_transaction = settings['clear_buffers_before_call']
+            self.controller.clear_buffers_before_each_transaction = \
+                settings['clear_buffers_before_call']
             self.controller.close_port_after_each_call = settings['clear_buffers_after_call']
             logger.info('MotorClass: RS485 controller setup with modbus')
         except serial.serialutil.SerialException:
-            logger.error('MotorClass: init Error - no controller connected, please check RS485 port address is correct')
+            logger.error('MotorClass: init Error - no controller connected, '
+                         'please check RS485 port address is correct')
         self.read_length = settings['read_length']
         self.direction = 0  # 0 = forward, 1 = reverse
         self.frequency = 0  # 0 - 100%
@@ -36,6 +44,7 @@ class Motor:
         self.auto_stop_timer()
 
     def set_speed(self, required_rpm):
+        """called by the api or web page to change the desired speed"""
         try:
             required_rpm = int(float(required_rpm) * 10)/10
         except ValueError:
@@ -43,8 +52,7 @@ class Motor:
         if required_rpm < 0.1:
             self.stop()
             return
-        elif required_rpm > 74.9:
-            required_rpm = 74.9
+        required_rpm = min(required_rpm, 74.9)
         self.running = 1
         self.direction = 0
         self.requested_rpm = required_rpm
@@ -52,6 +60,10 @@ class Motor:
         logger.info('MotorClass: Set speed: %s' % required_rpm)
 
     def rpm_controller(self):
+        """takes the speed in rpm and the desired speed and sets the controller frequency
+           if the speed varies it will bump the frequency by +- the frequiency_rpm value to
+           keep rpm withjin 0.1 rpm. Multi threadedd with threads running every 10 seconds
+           when the machine is running"""
         rpm = self.rpm.get_rpm()
         speedchanged = 1
         if self.running:  # run this check in 10s if the drum is running
@@ -81,10 +93,12 @@ class Motor:
                 logger.error('MotorClass: Rpm controller function error No RS483 Controller')
             except minimalmodbus.NoResponseError:
                 logger.error('MotorClass: Rpm controller function error RS485 timeout')
-            logger.info('Motorclass: RPM Controller: Current RPM %.2f Desired %.2f setting to frequency %s'
+            logger.info('Motorclass: RPM Controller: Current RPM %.2f '
+                        'Desired %.2f setting to frequency %s'
                         % (rpm, self.requested_rpm, self.frequency))
 
     def stop(self):
+        """Called by the API or web page to stop the motor"""
         self.direction = 0
         self.frequency = 0
         self.requested_rpm = 0
@@ -98,43 +112,55 @@ class Motor:
         logger.info('MotorClass: STOP requested')
 
     def controller_command(self, message):
+        """Sends the message (a number of words) to the v20 starting at the
+        command_start_register"""
         self.controller.write_registers(self.command_start_register, message)
         self.controller.serial.close()
 
     def controller_query(self):
+        """Reads from the controller, starting at the query_start_register and
+         returns the read_length number of consecutive registers """
         try:
-            actual_data = self.controller.read_registers(self.query_start_register, self.read_length, 3)
+            actual_data = self.controller.read_registers(self.query_start_register,
+                                                         self.read_length, 3)
             setting_data = self.controller.read_registers(self.command_start_register, 4, 3)
             self.controller.serial.close()
             return {'running': running(self.running), 'reqfrequency': setting_data[0] / 100,
-                    'frequency': actual_data[0] / 100, 'voltage': actual_data[9], 'current': actual_data[2] / 100,
+                    'frequency': actual_data[0] / 100, 'voltage': actual_data[9], 'current':
+                        actual_data[2] / 100,
                     'rpm': actual_data[1], 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
                     'requested_speed': self.requested_rpm}
         except AttributeError:   # RS485 not plugged in
-            logger.error('MotorClass: Controller Query Error: RS485 controller is not working or not plugged in')
+            logger.error('MotorClass: Controller Query Error: RS485 controller is not '
+                         'working or not plugged in')
             return {'running': running(self.running), 'reqfrequency': self.frequency / 100,
                     'frequency': 'No RS485 Controller', 'voltage': 'No RS485 Controller',
                     'current': 'No RS485 Controller', 'rpm': 'No RS485 Controller',
-                    'tombola_speed': '%.2f' % self.rpm.get_rpm(), 'requested_speed': self.requested_rpm}
+                    'tombola_speed': '%.2f' % self.rpm.get_rpm(),
+                    'requested_speed': self.requested_rpm}
         except minimalmodbus.NoResponseError:
             logger.error('MotorClass: Controller Query Error: No response from the V20 controller, '
                          'check it is powered on and connected')
             return {'running': running(self.running), 'reqfrequency': self.frequency / 100,
-                    'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout', 'current': 'RS485 Timeout',
-                    'rpm': 'RS485 Timeout', 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
+                    'frequency': 'RS485 Timeout', 'voltage': 'RS485 Timeout',
+                    'current': 'RS485 Timeout', 'rpm': 'RS485 Timeout',
+                    'tombola_speed': '%.2f' % self.rpm.get_rpm(),
                     'requested_speed': self.requested_rpm}
         except:
             logger.error('MotorClass: Controller Query Error: unhandled exeption', exc_info=BaseException)
-            return {'running': running(self.running), 'reqfrequency': self.frequency / 100, 'frequency': '-',
-                    'voltage': '-', 'current': '-', 'rpm': '-', 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
+            return {'running': running(self.running), 'reqfrequency': self.frequency / 100,
+                    'frequency': '-', 'voltage': '-', 'current': '-', 'rpm': '-',
+                    'tombola_speed': '%.2f' % self.rpm.get_rpm(),
                     'requested_speed': self.requested_rpm}
 
     def print_controlword(self):
+        """Writes the value of the STW control word to the application log (used for debugging)"""
         data = self.controller.read_register(99, 0, 3)
         self.controller.serial.close()
         logger.info('Motorclass: read control word: %s' % data)
 
     def read_register(self, reg):
+        """returns the value of the registry specified via the API"""
         try:
             data = self.controller.read_register(reg, 0, 3)
             self.controller.serial.close()
@@ -148,6 +174,7 @@ class Motor:
             return {'register': reg, 'word': 'RS485 Timeout'}
 
     def write_register(self, reg, controlword):
+        """api call that writes the controlword specified into the v20 register specified"""
         try:
             self.controller.write_register(reg, controlword)
             self.controller.serial.close()
@@ -158,6 +185,8 @@ class Motor:
             logger.error('MotorClass: write_register function error RS485 timeout')
 
     def set_stop_time(self, autostop, stoptime):
+        """website call or API call that sets the stop timer consists of a boolean switch 'autostop'
+        and at time HH:MM:SS"""
         if time_format_check(stoptime):
             self.autoshutdown = autostop
             settings['autoshutdown'] = autostop
@@ -167,9 +196,11 @@ class Motor:
             writesettings()
 
     def get_stop_time(self):
+        """Returns the stop time and is the autostop function is enabled"""
         return {'autostop': self.autoshutdown, 'stoptime': self.autoshutdowntime}
 
     def auto_stop_timer(self):
+        """Thread that checks if the time has matched the autostop time and stops the motor"""
         timerthread = Timer(1, self.auto_stop_timer)
         timerthread.start()
         if self.autoshutdown and self.running:
@@ -181,6 +212,8 @@ class Motor:
                 self.stop()
 
     def parse_control_message(self, message):
+        """Parser that recieves messages from the API or web page posts and directs
+        messages to the correct function"""
         if 'stop' in message.keys():
             logger.info('MotorClass: Stop request recieved from web application')
             self.stop()
@@ -212,27 +245,19 @@ class Motor:
                 self.set_stop_time(False, message['stoptime'])
             logger.info('Stop time updated via web application')
         else:
-            logger.info('MotorClass: API message recieved but not processed  = %s' % message)  # used for debugging
+            logger.info('MotorClass: API message recieved but not processed  = %s' % message)
         return self.controller_query()
 
 
-def direction(value):
-    if value == 1:
-        return 'Reverse'
-    elif value == 0:
-        return 'Forward'
-    else:
-        return value
-
-
 def running(value):
+    """Returns text value based on running state"""
     if value == 1:
         return 'Running'
-    else:
-        return 'Stopped'
+    return 'Stopped'
 
 
 def time_format_check(value):
+    """Tests if a time string is in the correct format"""
     try:
         datetime.strptime(value, '%H:%M:%S')
         return True

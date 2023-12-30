@@ -1,17 +1,24 @@
+"""
+Settings module, reads the settings from a settings.json file. If it does not exist or a new setting
+has appeared it will creat from the defaults in the initialise function.
+"""
+
 import json
 from datetime import datetime
 
 
-version = '1.4.8'
+VERSION = '1.4.9'
 
 
 def writesettings():
+    """Write settings to json file"""
     settings['LastSave'] = datetime.now().strftime('%d/%m/%y %H:%M:%S')
-    with open('settings.json', 'w') as outfile:
+    with open('settings.json', 'w', encoding='UTF-8') as outfile:
         json.dump(settings, outfile, indent=4, sort_keys=True)
 
 
-def initialise():  # These are the default values written to the settings.json file the first time the app is run
+def initialise():  # Default values written to the settings.json file the first time the app is run
+    """Setup the settings structure with default values"""
     isettings = {'LastSave': '01/01/2000 00:00:01',
                  'STW_forward': 1142,
                  'STW_register': 99,
@@ -51,8 +58,9 @@ def initialise():  # These are the default values written to the settings.json f
 
 
 def readsettings():
+    """Read the json file"""
     try:
-        with open('settings.json') as json_file:
+        with open('settings.json', encoding='UTF-8') as json_file:
             jsettings = json.load(json_file)
             return jsettings
     except FileNotFoundError:
@@ -61,6 +69,7 @@ def readsettings():
 
 
 def loadsettings():
+    """Replace the default settings with thsoe from the json files"""
     global settings
     settingschanged = 0
     fsettings = readsettings()
@@ -68,7 +77,7 @@ def loadsettings():
         try:
             settings[item] = fsettings[item]
         except KeyError:
-            print('settings[%s] Not found in json file using default' % item)
+            print(f'settings[{item}] Not found in json file using default')
             settingschanged = 1
     if settingschanged == 1:
         writesettings()
