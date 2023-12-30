@@ -15,7 +15,8 @@ Flask for the Web application server. A USB RS485 controller provides connectivi
 library **Minimal Modbus** is used for the Modbus protocol.<br>
 **Minimal Modbus Library Documentation** https://minimalmodbus.readthedocs.io/en/stable/
 
-Full documentation can be found in the file https://github.com/westerlymerlin/UCL-tombola/blob/master/docs/Tombola%20Functional%20Description.docx
+Full documentation can be found in the file: [README.pdf](./README.pdf)
+
 
 ---
 **Web Application**

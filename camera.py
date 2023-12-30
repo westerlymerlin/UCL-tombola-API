@@ -1,9 +1,15 @@
+"""
+Camera module, configures the webcam if it is avaialbe used the
+cv2 library from opencv-python-headless
+"""
+
 import cv2
 from logmanager import logger
 from settings import settings
 
 
 class VideoCamera(object):
+    """Videocamera class that is called by the app module module"""
     def __init__(self):
         self.video = cv2.VideoCapture(settings['cameraID'])
         if not self.video.isOpened():
@@ -23,9 +29,11 @@ class VideoCamera(object):
             logger.info('Video Contrast %i' % self.video.get(cv2.CAP_PROP_CONTRAST))
 
     def __del__(self):
+        """Releases resources when app is closed down"""
         self.video.release()
 
     def get_frame(self):
+        """Get a stream of raw images and encode asjpg files"""
         ret, frame = self.video.read()
         ret, jpeg = cv2.imencode('.jpg', frame)
         return jpeg.tobytes()
