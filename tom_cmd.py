@@ -1,4 +1,4 @@
-"""a basic command line app to allow a user connected to the raspberry pi console via TTY or SSH
+"""A basic command line app to allow a user connected to the raspberry pi console via TTY or SSH
 to send stop start messages to the app.
 """
 

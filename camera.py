@@ -1,5 +1,5 @@
 """
-Camera module, configures the webcam if it is avaialbe used the
+Camera module, configures the webcam if it is avaialbe uses the
 cv2 library from opencv-python-headless
 """
 

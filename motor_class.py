@@ -7,12 +7,12 @@ from datetime import datetime
 import minimalmodbus
 import serial.serialutil
 from settings import settings, writesettings
-from rpm_class import RPM
+from rpm_class import RPMClass
 from logmanager import logger
 
 
-class Motor:
-    """Motor controller class, manages the comms to teh v20 controller and reads rpm"""
+class MotorClass:
+    """Motor controller class, manages the comms to the v20 controller and reads rpm"""
     def __init__(self):
         self.command_start_register = settings['control_start_register']
         self.stw_control_register = settings['STW_register']
@@ -40,7 +40,7 @@ class Motor:
         self.autoshutdowntime = settings['shutdowntime']
         self.rpm_hz = settings['rpm_frequency']
         self.requested_rpm = 0
-        self.rpm = RPM()
+        self.rpm = RPMClass()
         self.auto_stop_timer()
 
     def set_speed(self, required_rpm):
@@ -163,7 +163,7 @@ class Motor:
         try:
             data = self.controller.read_register(reg, 0, 3)
             self.controller.serial.close()
-            logger.info('MotorClass: read registry: Registry %s. Word %s', (reg, data))
+            logger.info('MotorClass: read registry: Registry %s. Word %s' % (reg, data))
             return {'register': reg, 'word': data}
         except AttributeError:
             logger.error('MotorClass: read_register function error No RS483 Controller')
@@ -177,7 +177,7 @@ class Motor:
         try:
             self.controller.write_register(reg, controlword)
             self.controller.serial.close()
-            logger.info('MotorClass: write registry: Registry %s. Word %s', (reg, controlword))
+            logger.info('MotorClass: write registry: Registry %s. Word %s' % (reg, controlword))
         except AttributeError:
             logger.error('MotorClass: write_register function error No RS483 Controller')
         except minimalmodbus.NoResponseError:
@@ -265,4 +265,4 @@ def time_format_check(value):
 
 
 if __name__ == '__main__':  # used for standlone testing
-    tom = Motor()
+    tom = MotorClass()

@@ -1,5 +1,5 @@
 """
-logmanager, setus up application logging. use the **logger** property to
+logmanager, setus up application logging. Ese the **logger** property to
 write to the log.
 """
 
