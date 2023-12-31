@@ -57,7 +57,7 @@ class Motor:
         self.direction = 0
         self.requested_rpm = required_rpm
         self.rpm_controller()
-        logger.info('MotorClass: Set speed: %s' % required_rpm)
+        logger.info('MotorClass: Set speed: %s', required_rpm)
 
     def rpm_controller(self):
         """takes the speed in rpm and the desired speed and sets the controller frequency
@@ -85,7 +85,7 @@ class Motor:
             speedchanged = 0
             rpm_hz = (self.frequency / self.rpm.get_rpm()) / 10  # calculate the steady rpm-hz ratio
             if abs(rpm_hz - self.rpm_hz) > 5:
-                logger.info('MotorClass: rpm_hz value should be = %s' % rpm_hz)
+                logger.info('MotorClass: rpm_hz value should be = %s', rpm_hz)
         if speedchanged:
             try:
                 self.controller_command([self.frequency, self.running, self.direction, 1])
@@ -93,9 +93,8 @@ class Motor:
                 logger.error('MotorClass: Rpm controller function error No RS483 Controller')
             except minimalmodbus.NoResponseError:
                 logger.error('MotorClass: Rpm controller function error RS485 timeout')
-            logger.info('Motorclass: RPM Controller: Current RPM %.2f '
-                        'Desired %.2f setting to frequency %s'
-                        % (rpm, self.requested_rpm, self.frequency))
+            logger.info('Motorclass: RPM Controller: Current RPM %.2f Desired %.2f setting to frequency %s' %
+                        (rpm, self.requested_rpm, self.frequency))
 
     def stop(self):
         """Called by the API or web page to stop the motor"""
@@ -157,14 +156,14 @@ class Motor:
         """Writes the value of the STW control word to the application log (used for debugging)"""
         data = self.controller.read_register(99, 0, 3)
         self.controller.serial.close()
-        logger.info('Motorclass: read control word: %s' % data)
+        logger.info('Motorclass: read control word: %s', data)
 
     def read_register(self, reg):
         """returns the value of the registry specified via the API"""
         try:
             data = self.controller.read_register(reg, 0, 3)
             self.controller.serial.close()
-            logger.info('MotorClass: read registry: Registry %s. Word %s' % (reg, data))
+            logger.info('MotorClass: read registry: Registry %s. Word %s', (reg, data))
             return {'register': reg, 'word': data}
         except AttributeError:
             logger.error('MotorClass: read_register function error No RS483 Controller')
@@ -178,7 +177,7 @@ class Motor:
         try:
             self.controller.write_register(reg, controlword)
             self.controller.serial.close()
-            logger.info('MotorClass: write registry: Registry %s. Word %s' % (reg, controlword))
+            logger.info('MotorClass: write registry: Registry %s. Word %s', (reg, controlword))
         except AttributeError:
             logger.error('MotorClass: write_register function error No RS483 Controller')
         except minimalmodbus.NoResponseError:
@@ -245,7 +244,7 @@ class Motor:
                 self.set_stop_time(False, message['stoptime'])
             logger.info('Stop time updated via web application')
         else:
-            logger.info('MotorClass: API message recieved but not processed  = %s' % message)
+            logger.info('MotorClass: API message recieved but not processed  = %s', message)
         return self.controller_query()
 
 

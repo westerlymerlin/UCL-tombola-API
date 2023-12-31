@@ -9,8 +9,7 @@ from motor_class import Motor
 from logmanager import logger
 from camera import VideoCamera
 
-
-logger.info(f'Starting Tombola web app version {VERSION}')
+logger.info('Starting Tombola web app version %s', VERSION)
 app = Flask(__name__)
 tom = Motor()
 video_stream = VideoCamera()
@@ -22,8 +21,8 @@ def index():
     if request.method == 'POST':
         # print(request.form)
         if len(request.form) == 0:
-            logger.warning('Index page: Invalid Web Post Recieved - returning 405 to %s' %
-                        request.headers['X-Forwarded-For'])
+            logger.warning('Index page: Invalid Web Post Recieved - returning 405 to %s',
+                           request.headers['X-Forwarded-For'])
             return '<!doctype html><html lang=en><title>405 Method Not Allowed</title>' \
                    '<h1>Method Not Allowed</h1>' \
                    '<p>The method is not allowed for the requested URL.</p>', 405
@@ -66,12 +65,12 @@ def api():
             if request.headers['api-key'] == settings['api-key']:  # check for correct API key
                 status = tom.parse_control_message(request.json)
                 return jsonify(status), 201
-            logger.warning('API: access attempt using an ivalid token from %s' % request.headers['X-Forwarded-For'])
+            logger.warning('API: access attempt using an ivalid token from %s', request.headers['X-Forwarded-For'])
             return 'access token(s) unuthorised', 401
-        logger.warning('API: access attempt without a token from %s' % request.headers['X-Forwarded-For'])
+        logger.warning('API: access attempt without a token from %s', request.headers['X-Forwarded-For'])
         return 'access token(s) incorrect', 401
     except KeyError:
-        logger.warning('API: bad json message from %s' % request.headers['X-Forwarded-For'])
+        logger.warning('API: bad json message from %s', request.headers['X-Forwarded-For'])
         return "badly formed json message", 400
 
 
@@ -86,7 +85,7 @@ def showplogs():
     return render_template('logs.html', rows=logs, log='Tombola log', version=VERSION)
 
 
-@app.route('/guaccesslog')   # display the gunicorn access log
+@app.route('/guaccesslog')  # display the gunicorn access log
 def showgalogs():
     """Displays the gunicorn access log file via the logs.html template"""
     with open(settings['gunicornpath'] + 'gunicorn-access.log', 'r', encoding='UTF-8') as f:
