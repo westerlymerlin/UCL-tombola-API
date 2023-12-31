@@ -8,7 +8,7 @@ from settings import settings
 from logmanager import logger
 
 
-class RPM:
+class RPMClass:
     """Main class that is called by the motor_class module"""
     def __init__(self):
         self.magnets = settings['rpm_magnets']  # no of magnets on the wheel per revolution
@@ -57,7 +57,7 @@ class RPM:
 
 
 if __name__ == '__main__':  # used for standlone testing
-    rpm = RPM()
+    rpm = RPMClass()
     X = True
     while X:
         X = input('any key to continue')

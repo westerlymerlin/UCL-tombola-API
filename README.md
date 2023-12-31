@@ -1,6 +1,6 @@
 # UCL-tombola
 
-**An application to control the UCL River Simulator.**
+**An application to control the UCL Riverbed Simulator.**
 <br>
 The River simulator consistes of a large (1m diameter) drum that can contain water, cement blocks simulate rocks on the riverbed.
 The whole contraption is driven by a 1/4 hp 3 phase motor.

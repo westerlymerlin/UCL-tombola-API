@@ -5,13 +5,13 @@ This is the main flask application - called by Gunicorn
 import subprocess
 from flask import Flask, render_template, jsonify, request, Response
 from settings import settings, VERSION
-from motor_class import Motor
+from motor_class import MotorClass
 from logmanager import logger
 from camera import VideoCamera
 
 logger.info('Starting Tombola web app version %s', VERSION)
 app = Flask(__name__)
-tom = Motor()
+tom = MotorClass()
 video_stream = VideoCamera()
 
 
@@ -45,7 +45,7 @@ def statusdata():
 
 
 def gen(camera):
-    """Image processor, converts the stream of jpegs into an mjpeg format for the browser"""
+    """Image processor, converts the stream of jpegs into an m-jpeg format for the browser"""
     while True:
         frame = camera.get_frame()
         yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n'
