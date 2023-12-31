@@ -1,11 +1,13 @@
-# a basic command line app to allow a user connected to the raspberry pi console via TTY or SSH
-# to send stop start messages to the app.
+"""a basic command line app to allow a user connected to the raspberry pi console via TTY or SSH
+to send stop start messages to the app.
+"""
 
 import requests
 
 
 def setspeed(speed):
-    message = {"frequency": speed}
+    """set speed"""
+    message = {"setrpm": speed}
     try:
         resp = requests.post('http://localhost/api', json=message, timeout=1)
         return resp.json()
