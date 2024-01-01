@@ -29,7 +29,7 @@ class RPMClass:
         logger.info("RPM deleted")
         GPIO.cleanup()
 
-    def recievedpulse(self, pin):
+    def recievedpulse(self, pin):   # pylint: disable=W0613
         """runs when the abs sensor activates the gpio pin"""
         self.timequeue.append(datetime.datetime.now())
         # print(self.timequeue)
