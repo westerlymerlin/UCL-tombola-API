@@ -2,13 +2,14 @@
 Camera module, configures the webcam if it is avaialbe uses the
 cv2 library from opencv-python-headless
 """
+# pylint: disable=E1101 disable=W0612
 
 import cv2
 from logmanager import logger
 from settings import settings
 
 
-class VideoCamera(object):
+class VideoCamera():
     """Videocamera class that is called by the app module module"""
     def __init__(self):
         self.video = cv2.VideoCapture(settings['cameraID'])
