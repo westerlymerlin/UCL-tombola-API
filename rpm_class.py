@@ -9,7 +9,25 @@ from logmanager import logger
 
 
 class RPMClass:
-    """Main class that is called by the motor_class module"""
+    """
+    RPMClass
+
+    Class for calculating RPM (Revolutions Per Minute) based on the time intervals between ABS pulses.
+
+    Parameters:
+    - magnets (int): Number of magnets on the wheel per revolution.
+    - rev_average (int): Rolling average number of revolutions.
+    - gpio_line (int): GPIO line used for the hall effect device.
+    - rpm_timeout (int): Timeout in seconds for determining if the wheel has stopped.
+    - timequeue (list): List for storing the timestamps of received ABS pulses.
+
+    Methods:
+    - __init__(self): Constructor method to initialize the class object.
+    - __del__(self): Destructor method to cleanup the GPIO settings when the app is exiting.
+    - recievedpulse(self, pin): Method runs when the ABS sensor activates the GPIO pin.
+    - get_rpm(self): Method to calculate and return the RPM.
+    - get_rpm_data(self): Method to return the time intervals between the ABS pulses for one revolution.
+    """
     def __init__(self):
         self.magnets = settings['rpm_magnets']  # no of magnets on the wheel per revolution
         self.rev_average = 3  # rolling average revolutions
