@@ -12,7 +12,27 @@ from logmanager import logger
 
 
 class MotorClass:
-    """Motor controller class, manages the comms to the v20 controller and reads rpm"""
+    """
+    Represents a motor controller.
+
+    Args:
+        None
+
+    Attributes:
+        command_start_register (int): Starting register for sending commands.
+        stw_control_register (int): Control register for the STW.
+        query_start_register (int): Starting register for querying the controller.
+        controller (Instrument): MinimalModbus instrument for communicating with the controller.
+        read_length (int): Number of consecutive registers to read.
+        direction (int): Direction of motor rotation (0 - forward, 1 - reverse).
+        frequency (float): Motor frequency (0-100%).
+        running (int): Status of motor (0 - disabled, 1 - enabled).
+        autoshutdown (bool): Flag indicating whether autoshutdown is enabled.
+        autoshutdowntime (int): Time after which the motor is shutdown if not used (in minutes).
+        rpm_hz (float): Conversion factor from RPM to Hz.
+        requested_rpm (float): Requested motor speed in RPM.
+        rpm (RPMClass): RPMClass object for getting actual motor speed.
+    """
     def __init__(self):
         self.command_start_register = settings['control_start_register']
         self.stw_control_register = settings['STW_register']

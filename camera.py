@@ -10,7 +10,14 @@ from settings import settings
 
 
 class VideoCamera():
-    """Videocamera class that is called by the app module module"""
+    """
+    Initializes the VideoCamera class.
+
+    The constructor creates a VideoCapture object, which represents the video source. It sets the video source
+    properties, such as frame rate, width, height, brightness, and contrast. If no video camera is found, an
+    error message is logged.
+
+    """
     def __init__(self):
         self.video = cv2.VideoCapture(settings['cameraID'])
         if not self.video.isOpened():
