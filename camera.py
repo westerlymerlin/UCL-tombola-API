@@ -1,9 +1,10 @@
+# pylint: disable=E1101 disable=W0612
 """
 Camera module, configures the webcam if it is avaialbe uses the
 cv2 library from opencv-python-headless
 Author: Gary Twinn
 """
-# pylint: disable=E1101 disable=W0612
+
 
 import cv2
 from logmanager import logger
