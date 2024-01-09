@@ -1,13 +1,14 @@
 """
 Settings module, reads the settings from a settings.json file. If it does not exist or a new setting
 has appeared it will creat from the defaults in the initialise function.
+Author: Gary Twinn
 """
 
 import json
 from datetime import datetime
 
 
-VERSION = '1.4.12'
+VERSION = '1.5.0'
 
 
 def writesettings():

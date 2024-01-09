@@ -1,6 +1,7 @@
 """
 logmanager, setus up application logging. Ese the **logger** property to
 write to the log.
+Author: Gary Twinn
 """
 
 import os
