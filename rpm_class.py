@@ -1,5 +1,6 @@
 """
-rpm_class module, reads pulses from abs sensor and converst to RPM
+rpm_class module, reads pulses from abs sensor and convert to RPM
+Author: Gary Twinn
 """
 
 import datetime

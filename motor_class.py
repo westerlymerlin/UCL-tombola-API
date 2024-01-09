@@ -1,5 +1,6 @@
 """
 motor_class module, provides the control to the v20 controller and reads from the rpm module
+Author: Gary Twinn
 """
 
 from threading import Timer
@@ -113,8 +114,8 @@ class MotorClass:
                 logger.error('MotorClass: Rpm controller function error No RS483 Controller')
             except minimalmodbus.NoResponseError:
                 logger.error('MotorClass: Rpm controller function error RS485 timeout')
-            logger.info('Motorclass: RPM Controller: Current RPM %.2f Desired %.2f setting to frequency %s' %
-                        (rpm, self.requested_rpm, self.frequency))
+            logger.info('Motorclass: RPM Controller: Current RPM %.2f Desired %.2f setting to frequency %s',
+                        rpm, self.requested_rpm, self.frequency)
 
     def stop(self):
         """Called by the API or web page to stop the motor"""
@@ -183,7 +184,7 @@ class MotorClass:
         try:
             data = self.controller.read_register(reg, 0, 3)
             self.controller.serial.close()
-            logger.info('MotorClass: read registry: Registry %s. Word %s' % (reg, data))
+            logger.info('MotorClass: read registry: Registry %s. Word %s', reg, data)
             return {'register': reg, 'word': data}
         except AttributeError:
             logger.error('MotorClass: read_register function error No RS483 Controller')
@@ -197,7 +198,7 @@ class MotorClass:
         try:
             self.controller.write_register(reg, controlword)
             self.controller.serial.close()
-            logger.info('MotorClass: write registry: Registry %s. Word %s' % (reg, controlword))
+            logger.info('MotorClass: write registry: Registry %s. Word %s', reg, controlword)
         except AttributeError:
             logger.error('MotorClass: write_register function error No RS483 Controller')
         except minimalmodbus.NoResponseError:
