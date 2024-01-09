@@ -423,6 +423,7 @@ confidence=HIGH,
 # --disable=W".
 disable=C0209,  # consider-using-f-string
         C0201,  # consider-iterating-dictionary
+        E1101,  # no-member
         R1732,  # consider-using-with
         W0602,  # global-variable-not-assigned
         W0603,  # global-statement

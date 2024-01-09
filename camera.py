@@ -1,4 +1,3 @@
-# pylint: disable=E1101 disable=W0612
 """
 Camera module, configures the webcam if it is avaialbe uses the
 cv2 library from opencv-python-headless
