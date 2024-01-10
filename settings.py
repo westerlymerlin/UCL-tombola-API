@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 
-VERSION = '1.5.0'
+VERSION = '1.5.1'
 
 
 def writesettings():
@@ -24,7 +24,7 @@ def initialise():  # Default values written to the settings.json file the first 
                  'STW_forward': 1142,
                  'STW_register': 99,
                  'STW_stop': 0,
-                 'api-key': '57vZPotsJ1VvRlnRKLG4',
+                 'api-key': '<APIKEY$>',
                  'autoshutdown': True,
                  'baud': 9600,
                  'bytesize': 8,
