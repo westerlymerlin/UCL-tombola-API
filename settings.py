@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 
-VERSION = '1.5.1'
+VERSION = '1.5.2'
 
 
 def writesettings():
@@ -42,6 +42,7 @@ def initialise():  # Default values written to the settings.json file the first 
                  'gunicornpath': './logs/',
                  'logappname': 'Tombola-Py',
                  'logfilepath': './logs/tombola.log',
+                 'loglevel': 'INFO',
                  'port': '/dev/ttyUSB0',
                  'read_length': 16,
                  'reading_start_register': 23,

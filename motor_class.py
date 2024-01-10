@@ -49,7 +49,7 @@ class MotorClass:
             self.controller.clear_buffers_before_each_transaction = \
                 settings['clear_buffers_before_call']
             self.controller.close_port_after_each_call = settings['clear_buffers_after_call']
-            logger.info('MotorClass: RS485 controller setup with modbus')
+            logger.debug('MotorClass: RS485 controller setup with modbus')
         except serial.serialutil.SerialException:
             logger.error('MotorClass: init Error - no controller connected, '
                          'please check RS485 port address is correct')
@@ -78,7 +78,7 @@ class MotorClass:
         self.direction = 0
         self.requested_rpm = required_rpm
         self.rpm_controller()
-        logger.info('MotorClass: Set speed: %s', required_rpm)
+        logger.debug('MotorClass: Set speed: %s', required_rpm)
 
     def rpm_controller(self):
         """takes the speed in rpm and the desired speed and sets the controller frequency
@@ -94,19 +94,19 @@ class MotorClass:
             return
         speed_diff = rpm - self.requested_rpm  # Difference between actual and requested rpm
         if abs(speed_diff) > 1:
-            logger.info('MotorClass: RPM diff > 1 so reseting')
+            logger.debug('MotorClass: RPM diff > 1 so reseting')
             self.frequency = int(10 * self.requested_rpm * self.rpm_hz)
         elif speed_diff > 0.1:
-            logger.info('MotorClass: RPM slightly to high, reducing it a bit')
+            logger.debug('MotorClass: RPM slightly to high, reducing it a bit')
             self.frequency = int(self.frequency - self.rpm_hz)
         elif speed_diff < -0.1:
-            logger.info('MotorClass: RPM slightly to low, increasing it a bit')
+            logger.debug('MotorClass: RPM slightly to low, increasing it a bit')
             self.frequency = int(self.frequency + self.rpm_hz)
         else:
             speedchanged = 0
             rpm_hz = (self.frequency / self.rpm.get_rpm()) / 10  # calculate the steady rpm-hz ratio
             if abs(rpm_hz - self.rpm_hz) > 5:
-                logger.info('MotorClass: rpm_hz value should be = %s', rpm_hz)
+                logger.debug('MotorClass: rpm_hz value should be = %s', rpm_hz)
         if speedchanged:
             try:
                 self.controller_command([self.frequency, self.running, self.direction, 1])
@@ -184,7 +184,7 @@ class MotorClass:
         try:
             data = self.controller.read_register(reg, 0, 3)
             self.controller.serial.close()
-            logger.info('MotorClass: read registry: Registry %s. Word %s', reg, data)
+            logger.debug('MotorClass: read registry: Registry %s. Word %s', reg, data)
             return {'register': reg, 'word': data}
         except AttributeError:
             logger.error('MotorClass: read_register function error No RS483 Controller')
@@ -228,42 +228,42 @@ class MotorClass:
                                          self.autoshutdowntime, '%d/%m/%Y %H:%M:%S')
             # print(stoptime)
             if stoptime < datetime.now():
-                logger.info('MotorClass: Auto stop time reched - stopping')
+                logger.info('MotorClass: Auto stop time reached - stopping')
                 self.stop()
 
     def parse_control_message(self, message):
         """Parser that recieves messages from the API or web page posts and directs
         messages to the correct function"""
         if 'stop' in message.keys():
-            logger.info('MotorClass: Stop request recieved from web application')
+            logger.debug('MotorClass: Stop request recieved from web application')
             self.stop()
         elif 'websetrpm' in message.keys():
-            logger.info('MotorClass: RPM set by web application')
+            logger.debug('MotorClass: RPM set by web application')
             self.set_speed(message['websetrpm'])
         elif 'setrpm' in message.keys():
-            logger.info('MotorClass: RPM set by API')
+            logger.debug('MotorClass: RPM set by API')
             self.set_speed(message['setrpm'])
         elif 'reset' in message.keys():
-            logger.info('MotorClass: Controller reset requested by web application')
+            logger.debug('MotorClass: Controller reset requested by web application')
             self.write_register(self.stw_control_register, settings['STW_forward'])
         elif 'write_register' in message.keys():
-            logger.info('MotorClass: Write Register recieved via API')
+            logger.debug('MotorClass: Write Register recieved via API')
             self.write_register(message['write_register'], message['word'])
         elif 'read_register' in message.keys():
-            logger.info('MotorClass: Read Register recieved via API')
+            logger.debug('MotorClass: Read Register recieved via API')
             return self.read_register(message['read_register'])
         elif 'rpm_data' in message.keys():
-            logger.info('MotorClass: RPM timing data request via API')
+            logger.debug('MotorClass: RPM timing data request via API')
             return self.rpm.get_rpm_data()
         elif 'rpm' in message.keys():
-            logger.info('MotorClass: RPM speed request via API')
+            logger.debug('MotorClass: RPM speed request via API')
             return {'rpm': self.rpm.get_rpm()}
         elif 'stoptime' in message.keys():
             if 'autostop' in message.keys():
                 self.set_stop_time(True, message['stoptime'])
             else:
                 self.set_stop_time(False, message['stoptime'])
-            logger.info('Stop time updated via web application')
+            logger.debug('Stop time updated via web application')
         else:
             logger.info('MotorClass: API message recieved but not processed  = %s', message)
         return self.controller_query()
