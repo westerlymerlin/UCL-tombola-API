@@ -45,7 +45,7 @@ class RPMClass:
 
     def __del__(self):
         """used when app is exiting to cleanup the GPIO settings"""
-        logger.info("RPM deleted")
+        logger.debug("RPM deleted")
         GPIO.cleanup()
 
     def recievedpulse(self, pin):   # pylint: disable=W0613

@@ -27,7 +27,7 @@ def index():
             return '<!doctype html><html lang=en><title>405 Method Not Allowed</title>' \
                    '<h1>Method Not Allowed</h1>' \
                    '<p>The method is not allowed for the requested URL.</p>', 405
-        logger.info('Index page: Web Post recieved')
+        logger.debug('Index page: Web Post recieved')
         tom.parse_control_message(request.form)
     return render_template('index.html', version=VERSION, rpm=tom.requested_rpm,
                            stoptimer=tom.get_stop_time())
