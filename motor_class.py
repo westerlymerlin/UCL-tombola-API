@@ -16,9 +16,6 @@ class MotorClass:
     """
     Represents a motor controller.
 
-    Args:
-        None
-
     Attributes:
         command_start_register (int): Starting register for sending commands.
         stw_control_register (int): Control register for the STW.
@@ -61,6 +58,7 @@ class MotorClass:
         self.autoshutdowntime = settings['shutdowntime']
         self.rpm_hz = settings['rpm_frequency']
         self.requested_rpm = 0
+        self.serialaccess = False
         self.rpm = RPMClass()
         self.auto_stop_timer()
 
@@ -134,23 +132,33 @@ class MotorClass:
     def controller_command(self, message):
         """Sends the message (a number of words) to the v20 starting at the
         command_start_register"""
+        while self.serialaccess:
+            pass
+        self.serialaccess = True
         self.controller.write_registers(self.command_start_register, message)
         self.controller.serial.close()
+        self.serialaccess = False
 
     def controller_query(self):
         """Reads from the controller, starting at the query_start_register and
          returns the read_length number of consecutive registers """
+        while self.serialaccess:
+            pass
+        self.serialaccess = True
         try:
             actual_data = self.controller.read_registers(self.query_start_register,
                                                          self.read_length, 3)
             setting_data = self.controller.read_registers(self.command_start_register, 4, 3)
             self.controller.serial.close()
+            self.serialaccess = False
             return {'running': running(self.running), 'reqfrequency': setting_data[0] / 100,
                     'frequency': actual_data[0] / 100, 'voltage': actual_data[9], 'current':
                         actual_data[2] / 100,
                     'rpm': actual_data[1], 'tombola_speed': '%.2f' % self.rpm.get_rpm(),
                     'requested_speed': self.requested_rpm}
         except AttributeError:   # RS485 not plugged in
+            self.controller.serial.close()
+            self.serialaccess = False
             logger.error('MotorClass: Controller Query Error: RS485 controller is not '
                          'working or not plugged in')
             return {'running': running(self.running), 'reqfrequency': self.frequency / 100,
@@ -159,6 +167,8 @@ class MotorClass:
                     'tombola_speed': '%.2f' % self.rpm.get_rpm(),
                     'requested_speed': self.requested_rpm}
         except minimalmodbus.NoResponseError:
+            self.controller.serial.close()
+            self.serialaccess = False
             logger.error('MotorClass: Controller Query Error: No response from the V20 controller, '
                          'check it is powered on and connected')
             return {'running': running(self.running), 'reqfrequency': self.frequency / 100,
@@ -166,8 +176,10 @@ class MotorClass:
                     'current': 'RS485 Timeout', 'rpm': 'RS485 Timeout',
                     'tombola_speed': '%.2f' % self.rpm.get_rpm(),
                     'requested_speed': self.requested_rpm}
-        except:
-            logger.error('MotorClass: Controller Query Error: unhandled exeption', exc_info=BaseException)
+        except serial.serialutil.SerialException:
+            self.controller.serial.close()
+            self.serialaccess = False
+            logger.error('MotorClass: Controller Query Error: unhandled ex eption', exc_info=BaseException)
             return {'running': running(self.running), 'reqfrequency': self.frequency / 100,
                     'frequency': '-', 'voltage': '-', 'current': '-', 'rpm': '-',
                     'tombola_speed': '%.2f' % self.rpm.get_rpm(),

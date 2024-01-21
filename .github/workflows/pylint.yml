@@ -6,6 +6,7 @@ on:
       - '**'
       - '!master'
 
+# noinspection YAMLSchemaValidation
 jobs:
   build:
     runs-on: ubuntu-latest
