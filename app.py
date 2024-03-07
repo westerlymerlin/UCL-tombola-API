@@ -14,6 +14,7 @@ logger.info('Starting Tombola web app version %s', VERSION)
 app = Flask(__name__)
 tom = MotorClass()
 video_stream = VideoCamera()
+logger.info('Api-Key = %s', settings['api-key'])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -63,7 +64,7 @@ def api():
     """API Endpoint for programatic access - needs request data to be posted in a json file"""
     try:
         if 'Api-Key' in request.headers.keys():  # check api key exists
-            if request.headers['api-key'] == settings['api-key']:  # check for correct API key
+            if request.headers['Api-Key'] == settings['api-key']:  # check for correct API key
                 status = tom.parse_control_message(request.json)
                 return jsonify(status), 201
             logger.warning('API: access attempt using an ivalid token from %s', request.headers['X-Forwarded-For'])
