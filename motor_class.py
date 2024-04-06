@@ -35,6 +35,17 @@ class MotorClass:
         self.command_start_register = settings['control_start_register']
         self.stw_control_register = settings['STW_register']
         self.query_start_register = settings['reading_start_register']
+        self.read_length = settings['read_length']
+        self.direction = 0  # 0 = forward, 1 = reverse
+        self.frequency = 0  # 0 - 100%
+        self.running = 0  # O = disabled 1 = enabled
+        self.autoshutdown = settings['autoshutdown']
+        self.autoshutdowntime = settings['shutdowntime']
+        self.rpm_hz = settings['rpm_frequency']
+        self.requested_rpm = 0
+        self.serialaccess = False
+        self.rpm = RPMClass()
+        self.auto_stop_timer()
         try:
             self.controller = minimalmodbus.Instrument(settings['port'], settings['station'],
                                                        minimalmodbus.MODE_RTU)
@@ -47,20 +58,13 @@ class MotorClass:
                 settings['clear_buffers_before_call']
             self.controller.close_port_after_each_call = settings['clear_buffers_after_call']
             logger.debug('MotorClass: RS485 controller setup with modbus')
+            # logger.debug('MotorClass: Resetting v20')
+            # self.write_register(self.stw_control_register, settings['STW_forward'])
+            # logger.debug('MotorClass: settimg speed to 0')
+            # self.stop()
         except serial.serialutil.SerialException:
             logger.error('MotorClass: init Error - no controller connected, '
                          'please check RS485 port address is correct')
-        self.read_length = settings['read_length']
-        self.direction = 0  # 0 = forward, 1 = reverse
-        self.frequency = 0  # 0 - 100%
-        self.running = 0  # O = disabled 1 = enabled
-        self.autoshutdown = settings['autoshutdown']
-        self.autoshutdowntime = settings['shutdowntime']
-        self.rpm_hz = settings['rpm_frequency']
-        self.requested_rpm = 0
-        self.serialaccess = False
-        self.rpm = RPMClass()
-        self.auto_stop_timer()
 
     def set_speed(self, required_rpm):
         """called by the api or web page to change the desired speed"""
@@ -71,7 +75,7 @@ class MotorClass:
         if required_rpm < 0.1:
             self.stop()
             return
-        required_rpm = min(required_rpm, 74.9)
+        required_rpm = min(required_rpm, 99.9)
         self.running = 1
         self.direction = 0
         self.requested_rpm = required_rpm
