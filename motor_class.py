@@ -96,7 +96,7 @@ class MotorClass:
             return
         speed_diff = rpm - self.requested_rpm  # Difference between actual and requested rpm
         if abs(speed_diff) > 1:
-            logger.debug('MotorClass: RPM diff > 1 so reseting')
+            logger.debug('MotorClass: RPM diff > 5 so reseting')
             self.frequency = int(10 * self.requested_rpm * self.rpm_hz)
         elif speed_diff > 0.1:
             logger.debug('MotorClass: RPM slightly to high, reducing it a bit')
@@ -108,7 +108,7 @@ class MotorClass:
             speedchanged = 0
             rpm_hz = (self.frequency / self.rpm.get_rpm()) / 10  # calculate the steady rpm-hz ratio
             if abs(rpm_hz - self.rpm_hz) > 5:
-                logger.debug('MotorClass: rpm_hz value should be = %s', rpm_hz)
+                logger.info('MotorClass: rpm_hz value should be = %s', rpm_hz)
         if speedchanged:
             try:
                 self.controller_command([self.frequency, self.running, self.direction, 1])
