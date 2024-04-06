@@ -75,7 +75,7 @@ class MotorClass:
         if required_rpm < 0.1:
             self.stop()
             return
-        required_rpm = min(required_rpm, 99.9)
+        required_rpm = min(required_rpm, settings['rpm_max'])
         self.running = 1
         self.direction = 0
         self.requested_rpm = required_rpm

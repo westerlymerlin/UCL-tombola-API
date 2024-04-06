@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 
-VERSION = '1.5.6'
+VERSION = '1.6.0'
 
 
 def writesettings():
@@ -49,6 +49,7 @@ def initialise():  # Default values written to the settings.json file the first 
                  'rpm_active_LED': 17,
                  'rpm_frequency': 11.91,
                  'rpm_magnets': 48,
+                 'rpm_max': 99.9,
                  'rpm_sensor_GPIO': 27,
                  'rpm_timeout_seconds': 2,
                  'shutdowntime': '08:00:00',

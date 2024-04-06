@@ -30,8 +30,8 @@ def index():
                    '<p>The method is not allowed for the requested URL.</p>', 405
         logger.debug('Index page: Web Post recieved')
         tom.parse_control_message(request.form)
-    return render_template('index.html', version=VERSION, rpm=tom.requested_rpm,
-                           stoptimer=tom.get_stop_time())
+    return render_template('index.html', rpm_max=settings['rpm_max'], version=VERSION,
+                           rpm=tom.requested_rpm, stoptimer=tom.get_stop_time())
 
 
 @app.route('/statusdata', methods=['GET'])
@@ -44,6 +44,12 @@ def statusdata():
     cputemperature = round(float(log) / 1000, 1)
     ctrldata['cpu'] = cputemperature
     return jsonify(ctrldata), 201
+
+
+@app.route('/webcam')  # display the application log
+def showwebcam():
+    """Displays the web cam and a stop button"""
+    return render_template('webcam.html', version=VERSION)
 
 
 def gen(camera):
