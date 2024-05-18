@@ -95,7 +95,7 @@ class MotorClass:
         else:
             return
         speed_diff = rpm - self.requested_rpm  # Difference between actual and requested rpm
-        if abs(speed_diff) > 1:
+        if abs(speed_diff) > 5:
             logger.debug('MotorClass: RPM diff > 5 so reseting')
             self.frequency = int(10 * self.requested_rpm * self.rpm_hz)
         elif speed_diff > 0.1:
