@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 
-VERSION = '1.6.2'
+VERSION = '1.7.0'
 
 
 def writesettings():
@@ -28,12 +28,6 @@ def initialise():  # Default values written to the settings.json file the first 
                  'autoshutdown': True,
                  'baud': 9600,
                  'bytesize': 8,
-                 'cameraBrightness': 10,
-                 'cameraContrast': 10,
-                 'cameraFPS': 30,
-                 'cameraHeight': 240,
-                 'cameraID': 0,
-                 'cameraWidth': 320,
                  'clear_buffers_after_call': True,
                  'clear_buffers_before_call': True,
                  'control_start_register': 2,

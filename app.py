@@ -4,16 +4,16 @@ Author: Gary Twinn
 """
 
 import subprocess
-from flask import Flask, render_template, jsonify, request, Response
+from flask import Flask, render_template, jsonify, request
 from settings import settings, VERSION
 from motor_class import MotorClass
 from logmanager import logger
-from camera import VideoCamera
+
 
 logger.info('Starting Tombola web app version %s', VERSION)
 app = Flask(__name__)
 tom = MotorClass()
-video_stream = VideoCamera()
+
 logger.info('Api-Key = %s', settings['api-key'])
 
 
@@ -44,25 +44,6 @@ def statusdata():
     cputemperature = round(float(log) / 1000, 1)
     ctrldata['cpu'] = cputemperature
     return jsonify(ctrldata), 201
-
-
-@app.route('/webcam')  # display the application log
-def showwebcam():
-    """Displays the web cam and a stop button"""
-    return render_template('webcam.html', version=VERSION)
-
-
-def gen(camera):
-    """Image processor, converts the stream of jpegs into an m-jpeg format for the browser"""
-    while True:
-        frame = camera.get_frame()
-        yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n'
-
-
-@app.route('/video_feed')
-def video_feed():
-    """The image feed read by the browser"""
-    return Response(gen(video_stream), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/api', methods=['POST'])
