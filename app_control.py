@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 
-VERSION = '1.7.2'
+VERSION = '1.7.3'
 
 
 def writesettings():

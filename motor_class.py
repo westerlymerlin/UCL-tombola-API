@@ -111,13 +111,16 @@ class MotorClass:
                 logger.info('MotorClass: rpm_hz value should be = %s', rpm_hz)
         if speedchanged:
             try:
+                logger.info('Motorclass: RPM Controller: Current RPM %.2f Desired %.2f setting to frequency %s',
+                            rpm, self.requested_rpm, self.frequency)
                 self.controller_command([self.frequency, self.running, self.direction, 1])
             except AttributeError:
-                logger.error('MotorClass: Rpm controller function error No RS483 Controller')
+                logger.error('MotorClass: rpm_controller function error No RS483 Controller')
+                self.serialaccess = False
             except minimalmodbus.NoResponseError:
-                logger.error('MotorClass: Rpm controller function error RS485 timeout')
-            logger.info('Motorclass: RPM Controller: Current RPM %.2f Desired %.2f setting to frequency %s',
-                        rpm, self.requested_rpm, self.frequency)
+                logger.error('MotorClass: rpm_controller function error RS485 timeout')
+                self.serialaccess = False
+
 
     def stop(self):
         """Called by the API or web page to stop the motor"""
@@ -126,19 +129,24 @@ class MotorClass:
         self.requested_rpm = 0
         self.running = 0
         try:
+            logger.info('MotorClass: STOP requested')
+            self.serialaccess = True
             self.controller_command([self.frequency, self.running, self.direction, 0])
+            self.serialaccess = False
         except AttributeError:
+            self.serialaccess = False
             logger.error('MotorClass: Stop function error No RS483 Controller')
+            self.serialaccess = False
         except minimalmodbus.NoResponseError:
+            self.serialaccess = False
             logger.error('MotorClass: Stop function error RS485 timeout')
-        logger.info('MotorClass: STOP requested')
+
 
     def controller_command(self, message):
         """Sends the message (a number of words) to the v20 starting at the
         command_start_register"""
         while self.serialaccess:
             pass
-        self.serialaccess = True
         self.controller.write_registers(self.command_start_register, message)
         self.controller.serial.close()
         self.serialaccess = False
