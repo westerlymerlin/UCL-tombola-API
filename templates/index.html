@@ -9,7 +9,7 @@
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 <script>
 
-setInterval(getstatusdata, 1000);
+setInterval(getstatusdata, 1500);
 
 async function getstatusdata() {
   const response = await fetch("/statusdata");

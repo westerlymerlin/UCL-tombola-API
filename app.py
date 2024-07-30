@@ -5,7 +5,7 @@ Author: Gary Twinn
 
 import subprocess
 from flask import Flask, render_template, jsonify, request
-from settings import settings, VERSION
+from app_control import settings, VERSION
 from motor_class import MotorClass
 from logmanager import logger
 

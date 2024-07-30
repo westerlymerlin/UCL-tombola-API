@@ -5,7 +5,7 @@ Author: Gary Twinn
 
 import datetime
 from RPi import GPIO
-from settings import settings
+from app_control import settings
 from logmanager import logger
 
 

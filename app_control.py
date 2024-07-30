@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 
-VERSION = '1.7.1'
+VERSION = '1.7.2'
 
 
 def writesettings():
@@ -50,7 +50,7 @@ def initialise():  # Default values written to the settings.json file the first 
                  'station': 1,
                  'stopbits': 1,
                  'syslog': '/var/log/syslog',
-                 'timeout': 1}
+                 'serialtimeout': 0.75}
     return isettings
 
 

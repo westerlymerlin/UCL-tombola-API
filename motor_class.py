@@ -7,7 +7,7 @@ from threading import Timer
 from datetime import datetime
 import minimalmodbus
 import serial.serialutil
-from settings import settings, writesettings
+from app_control import settings, writesettings
 from rpm_class import RPMClass
 from logmanager import logger
 
@@ -53,7 +53,7 @@ class MotorClass:
             self.controller.serial.baudrate = settings['baud']
             self.controller.serial.bytesize = settings['bytesize']
             self.controller.serial.stopbits = settings['stopbits']
-            self.controller.serial.timeout = settings['timeout']
+            self.controller.serial.timeout = settings['serialtimeout']
             self.controller.clear_buffers_before_each_transaction = \
                 settings['clear_buffers_before_call']
             self.controller.close_port_after_each_call = settings['clear_buffers_after_call']
