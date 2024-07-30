@@ -130,7 +130,6 @@ class MotorClass:
         self.running = 0
         try:
             logger.info('MotorClass: STOP requested')
-            self.serialaccess = True
             self.controller_command([self.frequency, self.running, self.direction, 0])
             self.serialaccess = False
         except AttributeError:
