@@ -85,6 +85,12 @@ async function getstatusdata() {
                     <td class="tabledataleft" id="123-tom-rpm">awaiting-data</td>
                 <td class="tabledataleft"><slot id="456-tom-rpm">awaiting-data</slot> (rpm)</td>
             </tr>
+            {% for thread in threadcount %}
+            <tr>
+                    <td class="tabledataleft">{{thread[0]}}</td>
+                    <td class="tabledataleft">{{thread[1]}}</td>
+            </tr>
+            {% endfor %}
       </table>
     <p>&nbsp</p>
     <p class="sectiontext">Change Settings</p>

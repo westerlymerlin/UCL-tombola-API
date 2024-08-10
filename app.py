@@ -4,6 +4,7 @@ Author: Gary Twinn
 """
 
 import subprocess
+from threading import enumerate as enumerate_threads
 from flask import Flask, render_template, jsonify, request
 from app_control import settings, VERSION
 from motor_class import MotorClass
@@ -16,6 +17,11 @@ tom = MotorClass()
 
 logger.info('Api-Key = %s', settings['api-key'])
 
+def threadlister():
+    appthreads =[]
+    for appthread in enumerate_threads():
+        appthreads.append([appthread.name, appthread.native_id])
+    return appthreads
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -31,7 +37,7 @@ def index():
         logger.debug('Index page: Web Post recieved')
         tom.parse_control_message(request.form)
     return render_template('index.html', rpm_max=settings['rpm_max'], version=VERSION,
-                           rpm=tom.requested_rpm, stoptimer=tom.get_stop_time())
+                           rpm=tom.requested_rpm, stoptimer=tom.get_stop_time(), threadcount=threadlister())
 
 
 @app.route('/statusdata', methods=['GET'])

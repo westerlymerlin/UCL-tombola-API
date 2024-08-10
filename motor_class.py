@@ -91,6 +91,7 @@ class MotorClass:
         speedchanged = 1
         if self.running:  # run this check in 10s if the drum is running
             rpmthread = Timer(10, self.rpm_controller)
+            rpmthread.name = 'RPM Reader Thread'
             rpmthread.start()
         else:
             return
@@ -245,6 +246,7 @@ class MotorClass:
     def auto_stop_timer(self):
         """Thread that checks if the time has matched the autostop time and stops the motor"""
         timerthread = Timer(1, self.auto_stop_timer)
+        timerthread.name = 'Auto Stop Thread'
         timerthread.start()
         if self.autoshutdown and self.running:
             stoptime = datetime.strptime(datetime.now().strftime('%d/%m/%Y ') +
