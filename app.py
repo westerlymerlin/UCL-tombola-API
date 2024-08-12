@@ -17,11 +17,14 @@ tom = MotorClass()
 
 logger.info('Api-Key = %s', settings['api-key'])
 
+
 def threadlister():
-    appthreads =[]
+    """Lists threads currently running"""
+    appthreads = []
     for appthread in enumerate_threads():
         appthreads.append([appthread.name, appthread.native_id])
     return appthreads
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

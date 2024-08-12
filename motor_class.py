@@ -3,6 +3,7 @@ motor_class module, provides the control to the v20 controller and reads from th
 Author: Gary Twinn
 """
 
+from time import sleep
 from threading import Timer
 from datetime import datetime
 import minimalmodbus
@@ -45,7 +46,9 @@ class MotorClass:
         self.requested_rpm = 0
         self.serialaccess = False
         self.rpm = RPMClass()
-        self.auto_stop_timer()
+        timerthread = Timer(1, self.auto_stop_timer)
+        timerthread.name = 'Auto Stop Thread'
+        timerthread.start()
         try:
             self.controller = minimalmodbus.Instrument(settings['port'], settings['station'],
                                                        minimalmodbus.MODE_RTU)
@@ -245,17 +248,15 @@ class MotorClass:
 
     def auto_stop_timer(self):
         """Thread that checks if the time has matched the autostop time and stops the motor"""
-        timerthread = Timer(1, self.auto_stop_timer)
-        timerthread.name = 'Auto Stop Thread'
-        timerthread.start()
-        if self.autoshutdown and self.running:
-            stoptime = datetime.strptime(datetime.now().strftime('%d/%m/%Y ') +
-                                         self.autoshutdowntime, '%d/%m/%Y %H:%M:%S')
-            # print(stoptime)
-            if stoptime < datetime.now():
-                logger.info('MotorClass: Auto stop time reached - stopping')
-                self.stop()
-
+        while True:
+            if self.autoshutdown and self.running:
+                stoptime = datetime.strptime(datetime.now().strftime('%d/%m/%Y ') +
+                                             self.autoshutdowntime, '%d/%m/%Y %H:%M:%S')
+                # print(stoptime)
+                if stoptime < datetime.now():
+                    logger.info('MotorClass: Auto stop time reached - stopping')
+                    self.stop()
+            sleep(1)
     def parse_control_message(self, message):
         """Parser that recieves messages from the API or web page posts and directs
         messages to the correct function"""
