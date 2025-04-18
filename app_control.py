@@ -21,6 +21,7 @@ def writesettings():
 def initialise():  # Default values written to the settings.json file the first time the app is run
     """Setup the settings structure with default values"""
     isettings = {'LastSave': '01/01/2000 00:00:01',
+                 'app-name': 'Tombola-Py',
                  'STW_forward': 1142,
                  'STW_register': 99,
                  'STW_stop': 0,
