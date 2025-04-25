@@ -1,6 +1,17 @@
 """
-This is the main flask application - called by Gunicorn
-Author: Gary Twinn
+Tombola Web Application
+
+A Flask-based web application for controlling and monitoring a tombola/motor device.
+This module provides both a web interface and API endpoints for programmatic control.
+
+Features:
+- Web interface for real-time motor control and monitoring
+- RESTful API for programmatic access (API key required)
+- System monitoring (CPU temperature, threads)
+- Access to application and system logs
+- Motor control with speed regulation and stop timer functionality
+
+This application is designed to be served by Gunicorn in a production environment.
 """
 
 import subprocess

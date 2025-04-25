@@ -1,7 +1,20 @@
 """
-Settings module, reads the settings from a settings.json file. If it does not exist or a new setting
-has appeared it will creat from the defaults in the initialise function.
-Author: Gary Twinn
+Settings Management Module
+
+This module handles application configuration settings with JSON persistence.
+It provides functionality to read, write, and initialize application settings
+from a settings.json file with fallback to defaults when settings are missing.
+
+Features:
+- Automatic creation of settings.json if not present
+- Default values for all settings
+- Persistence of settings to JSON format
+- Automatic detection and addition of new settings
+- Timestamp tracking of settings modifications
+
+Usage:
+    import from app_control import settings, writesettings
+
 """
 
 import json
@@ -25,7 +38,7 @@ def initialise():  # Default values written to the settings.json file the first 
                  'STW_forward': 1142,
                  'STW_register': 99,
                  'STW_stop': 0,
-                 'api-key': '<APIKEY$>',
+                 'api-key': 'change-me',
                  'autoshutdown': True,
                  'baud': 9600,
                  'bytesize': 8,
