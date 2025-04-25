@@ -1,7 +1,33 @@
 """
-logmanager, setus up application logging. Ese the **logger** property to
-write to the log.
-Author: Gary Twinn
+Logging Configuration and Management
+
+This module provides centralized logging configuration and management for the application.
+Configures logging formats, handlers, and log file management to ensure consistent
+logging across all application components.
+
+Features:
+    - Standardized log formatting
+    - File-based logging with rotation
+    - Log level management
+    - Thread-safe logging operations
+
+Exports:
+    logger: Configured logger instance for use across the application
+
+Usage:
+    from logmanager import logger
+
+    logger.info('Operation completed successfully')
+    logger.warning('Resource threshold reached')
+    logger.error('Failed to complete operation')
+
+Log Format:
+    Timestamps, log levels, and contextual information are automatically included
+    in each log entry for effective debugging and monitoring.
+
+Log Files:
+    Logs are stored with automatic rotation to prevent excessive disk usage
+    while maintaining historical records.
 """
 
 import os

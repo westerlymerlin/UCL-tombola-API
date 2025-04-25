@@ -1,6 +1,24 @@
 """
-motor_class module, provides the control to the v20 controller and reads from the rpm module
-Author: Gary Twinn
+Motor Control Module for V20 Controller
+
+This module provides a comprehensive interface for controlling an electric motor via a V20 controller
+using Modbus RTU protocol over RS485. It handles motor speed control, direction, auto-shutdown,
+and monitoring of motor parameters including RPM, voltage, and current.
+
+Key features:
+- Two-way communication with V20 motor controller via Modbus RTU
+- Real-time RPM monitoring and speed adjustment
+- Auto-shutdown capability based on configurable timer
+- Error handling for connection issues and timeouts
+- Comprehensive logging of motor operations and errors
+
+Dependencies:
+- minimalmodbus: Handles Modbus RTU communication
+- serial: Manages serial port connections
+- rpm_class: Provides actual motor speed measurement
+- app_control: Manages application settings
+- logmanager: Handles logging
+
 """
 
 from time import sleep
@@ -70,7 +88,19 @@ class MotorClass:
                          'please check RS485 port address is correct')
 
     def set_speed(self, required_rpm):
-        """called by the api or web page to change the desired speed"""
+        """
+        Sets the motor speed to the specified revolutions per minute (RPM). Validates
+        the input, ensuring it is converted to a valid number, within allowable limits,
+        and adjusts the operation of the motor accordingly.
+
+        Args:
+            required_rpm (float): The desired speed in revolutions per minute (RPM).
+                Must be a positive number and should not exceed the preconfigured
+                maximum RPM value.
+
+        Returns:
+            None
+        """
         try:
             required_rpm = int(float(required_rpm) * 10)/10
         except ValueError:
@@ -127,7 +157,17 @@ class MotorClass:
 
 
     def stop(self):
-        """Called by the API or web page to stop the motor"""
+        """
+        Stops the motor operation by resetting operational parameters and sending
+        the stop command to the controller. Handles exceptions for communication
+        issues with the motor controller.
+
+        Raises:
+            AttributeError: If the RS485 Controller is absent or incorrectly
+            initialized, triggering an error.
+            minimalmodbus.NoResponseError: If the RS485 communication times out,
+            signaling a communication error.
+        """
         self.direction = 0
         self.frequency = 0
         self.requested_rpm = 0
@@ -257,9 +297,25 @@ class MotorClass:
                     logger.info('MotorClass: Auto stop time reached - stopping')
                     self.stop()
             sleep(1)
+
     def parse_control_message(self, message):
-        """Parser that recieves messages from the API or web page posts and directs
-        messages to the correct function"""
+        """
+        Processes the control messages for motor operations by interpreting the keys in the provided message
+        dictionary and performing corresponding actions, such as stopping the motor, setting the RPM, resetting
+        the controller, accessing registers, or updating stop time. Returns responses for specific queries.
+
+        Args:
+            message (dict): A dictionary containing control instructions, where keys indicate the type
+            of action to perform (e.g., 'stop', 'websetrpm') and values provide additional details
+            for those actions.
+
+        Raises:
+            None
+
+        Returns:
+            Optional[dict]: Response data for specific queries such as reading registers or fetching
+            RPM data. If no response is applicable, returns the result of `controller_query()`.
+        """
         if 'stop' in message.keys():
             logger.debug('MotorClass: Stop request recieved from web application')
             self.stop()

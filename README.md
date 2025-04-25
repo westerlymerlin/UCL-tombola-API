@@ -69,3 +69,11 @@ Plug in the USB RS485 controller and find the port number (*com1* to *com7* on a
 */dev/ttyUSB9* on a mac or Raspberry Pi)  <br>
 Change the value for `"port": "com5",`  to suite and run again to pick up the new port accress
 
+## License
+[GNU GENERAL PUBLIC LICENSE](./LICENCE)
+## Contributors
+Dr Gary Twinn   
+Dr Byron Adams  
+Dr Jesse Zondervan  
+## Acknowledgments
+This project supports research at University College London (UCL).

@@ -1,6 +1,19 @@
 """
-rpm_class module, reads pulses from abs sensor and convert to RPM
-Author: Gary Twinn
+RPM Calculation Module
+
+This module provides functionality to calculate vehicle wheel RPM (Revolutions Per Minute)
+by processing pulses from an ABS (Anti-lock Braking System) sensor connected to a Raspberry Pi GPIO.
+
+The module:
+- Detects and timestamps ABS sensor pulses via GPIO input
+- Calculates RPM based on rolling averages of pulse intervals
+- Handles timeout detection for wheel stoppage
+- Provides both RPM values and raw timing data
+
+Requirements:
+- Raspberry Pi with GPIO configured
+- ABS sensor connected to the specified GPIO pin
+- Configuration settings from app_control.settings
 """
 
 import datetime
