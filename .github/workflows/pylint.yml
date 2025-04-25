@@ -31,7 +31,3 @@ jobs:
       run: gh pr create --title "Auto PR from github action" --body "Static code analysis (pylint > 9/10) has completed"
       env:
         GH_TOKEN: ${{ secrets.ACTIONSECRET }}
-    - name: Merge the PR to master
-      run: gh pr merge --merge
-      env:
-        GH_TOKEN: ${{ secrets.ACTIONSECRET }}
