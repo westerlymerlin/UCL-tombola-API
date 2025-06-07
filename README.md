@@ -1,9 +1,9 @@
 # UCL-tombola
 
-**An application to control the UCL Riverbed Simulator.**
+**An application to control the Riverbed Simulator.**
 <br>
 The River simulator consistes of a large (1m diameter) drum that can contain water, cement blocks simulate rocks on the riverbed.
-The whole contraption is driven by a 1/4 hp 3 phase motor.
+The drum is driven by a 1/4 hp 3 phase motor.
 
 The 3 phase motor is controlled by a **Siemens V20** single phase to 3 phase invertor which is controled via an RS485 
 interface using the modbus protocol<br>
@@ -71,9 +71,9 @@ Change the value for `"port": "com5",`  to suite and run again to pick up the ne
 
 ## License
 [GNU GENERAL PUBLIC LICENSE](./LICENCE)
+
+
 ## Contributors
 Dr Gary Twinn   
 Dr Byron Adams  
 Dr Jesse Zondervan  
-## Acknowledgments
-This project supports research at University College London (UCL).
