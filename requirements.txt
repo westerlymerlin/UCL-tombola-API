@@ -1,6 +1,7 @@
 minimalmodbus
 flask
-RPi.GPIO
+gunicorn
+rpi.lgpio
 numpy
 opencv-python-headless
 requests
