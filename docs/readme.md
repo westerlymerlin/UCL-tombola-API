@@ -23,6 +23,9 @@ Features:
 
 This application is designed to be served by Gunicorn in a production environment.
 
+Author: Gary Twinnington
+URL: https://github.com/garytwinnington/tombola-py-web-app
+
 [app_control](./app_control.md)  
 Settings Management Module
 
@@ -116,3 +119,22 @@ to send stop start messages to the app.
 
 ---
 
+
+-----------------------------------------------------------------------------------
+Copyright (C) YYYY Gary Twinn
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+Author: Gary Twinn
+--------------------------------------------------------------------------------

@@ -1,14 +1,4 @@
-# Contents for: app_control
-
-* [app\_control](#app_control)
-  * [json](#app_control.json)
-  * [datetime](#app_control.datetime)
-  * [VERSION](#app_control.VERSION)
-  * [writesettings](#app_control.writesettings)
-  * [initialise](#app_control.initialise)
-  * [readsettings](#app_control.readsettings)
-  * [loadsettings](#app_control.loadsettings)
-  * [settings](#app_control.settings)
+# None
 
 <a id="app_control"></a>
 

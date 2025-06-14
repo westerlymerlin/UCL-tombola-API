@@ -1,16 +1,4 @@
-# Contents for: rpm_class
-
-* [rpm\_class](#rpm_class)
-  * [datetime](#rpm_class.datetime)
-  * [GPIO](#rpm_class.GPIO)
-  * [settings](#rpm_class.settings)
-  * [logger](#rpm_class.logger)
-  * [RPMClass](#rpm_class.RPMClass)
-    * [\_\_init\_\_](#rpm_class.RPMClass.__init__)
-    * [\_\_del\_\_](#rpm_class.RPMClass.__del__)
-    * [recievedpulse](#rpm_class.RPMClass.recievedpulse)
-    * [get\_rpm](#rpm_class.RPMClass.get_rpm)
-    * [get\_rpm\_data](#rpm_class.RPMClass.get_rpm_data)
+# None
 
 <a id="rpm_class"></a>
 
