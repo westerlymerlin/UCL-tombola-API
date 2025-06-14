@@ -12,6 +12,9 @@ Features:
 - Motor control with speed regulation and stop timer functionality
 
 This application is designed to be served by Gunicorn in a production environment.
+
+Author: Gary Twinnington
+URL: https://github.com/garytwinnington/tombola-py-web-app
 """
 
 import subprocess

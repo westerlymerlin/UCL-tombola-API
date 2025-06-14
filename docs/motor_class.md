@@ -1,31 +1,4 @@
-# Contents for: motor_class
-
-* [motor\_class](#motor_class)
-  * [sleep](#motor_class.sleep)
-  * [Timer](#motor_class.Timer)
-  * [datetime](#motor_class.datetime)
-  * [minimalmodbus](#motor_class.minimalmodbus)
-  * [serialutil](#motor_class.serialutil)
-  * [settings](#motor_class.settings)
-  * [writesettings](#motor_class.writesettings)
-  * [RPMClass](#motor_class.RPMClass)
-  * [logger](#motor_class.logger)
-  * [MotorClass](#motor_class.MotorClass)
-    * [\_\_init\_\_](#motor_class.MotorClass.__init__)
-    * [set\_speed](#motor_class.MotorClass.set_speed)
-    * [rpm\_controller](#motor_class.MotorClass.rpm_controller)
-    * [stop](#motor_class.MotorClass.stop)
-    * [controller\_command](#motor_class.MotorClass.controller_command)
-    * [controller\_query](#motor_class.MotorClass.controller_query)
-    * [print\_controlword](#motor_class.MotorClass.print_controlword)
-    * [read\_register](#motor_class.MotorClass.read_register)
-    * [write\_register](#motor_class.MotorClass.write_register)
-    * [set\_stop\_time](#motor_class.MotorClass.set_stop_time)
-    * [get\_stop\_time](#motor_class.MotorClass.get_stop_time)
-    * [auto\_stop\_timer](#motor_class.MotorClass.auto_stop_timer)
-    * [parse\_control\_message](#motor_class.MotorClass.parse_control_message)
-  * [running](#motor_class.running)
-  * [time\_format\_check](#motor_class.time_format_check)
+# None
 
 <a id="motor_class"></a>
 

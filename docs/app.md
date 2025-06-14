@@ -1,26 +1,4 @@
-# Contents for: app
-
-* [app](#app)
-  * [subprocess](#app.subprocess)
-  * [enumerate\_threads](#app.enumerate_threads)
-  * [Flask](#app.Flask)
-  * [render\_template](#app.render_template)
-  * [jsonify](#app.jsonify)
-  * [request](#app.request)
-  * [settings](#app.settings)
-  * [VERSION](#app.VERSION)
-  * [MotorClass](#app.MotorClass)
-  * [logger](#app.logger)
-  * [app](#app.app)
-  * [tom](#app.tom)
-  * [threadlister](#app.threadlister)
-  * [index](#app.index)
-  * [statusdata](#app.statusdata)
-  * [api](#app.api)
-  * [showplogs](#app.showplogs)
-  * [showgalogs](#app.showgalogs)
-  * [showgelogs](#app.showgelogs)
-  * [showslogs](#app.showslogs)
+# None
 
 <a id="app"></a>
 
@@ -39,6 +17,9 @@ Features:
 - Motor control with speed regulation and stop timer functionality
 
 This application is designed to be served by Gunicorn in a production environment.
+
+Author: Gary Twinnington
+URL: https://github.com/garytwinnington/tombola-py-web-app
 
 <a id="app.subprocess"></a>
 

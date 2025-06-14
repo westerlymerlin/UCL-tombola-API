@@ -1,15 +1,4 @@
-# Contents for: logmanager
-
-* [logmanager](#logmanager)
-  * [os](#logmanager.os)
-  * [sys](#logmanager.sys)
-  * [logging](#logmanager.logging)
-  * [RotatingFileHandler](#logmanager.RotatingFileHandler)
-  * [settings](#logmanager.settings)
-  * [log\_dir](#logmanager.log_dir)
-  * [logger](#logmanager.logger)
-  * [LogFile](#logmanager.LogFile)
-  * [formatter](#logmanager.formatter)
+# None
 
 <a id="logmanager"></a>
 
